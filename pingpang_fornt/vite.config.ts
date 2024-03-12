@@ -14,5 +14,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  // 修改服务启动的端口号
+  server: {
+    "host": '0.0.0.0',
+    port:4000
   }
 })
