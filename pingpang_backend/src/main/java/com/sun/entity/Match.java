@@ -21,7 +21,7 @@ public class Match implements Serializable {
 
     private String address;
 
-    private Integer playNumer;
+    private Integer playNumber;
 
     private String desc;
 
@@ -29,7 +29,7 @@ public class Match implements Serializable {
 
     private Integer awards;
 
-    private String contact;
+    private String contact; // 联系方式
 
     public Long getMatchId() {
         return matchId;
@@ -55,12 +55,12 @@ public class Match implements Serializable {
         this.address = address;
     }
 
-    public Integer getPlayNumer() {
-        return playNumer;
+    public Integer getPlayNumber() {
+        return playNumber;
     }
 
-    public void setPlayNumer(Integer playNumer) {
-        this.playNumer = playNumer;
+    public void setPlayNumber(Integer playNumer) {
+        this.playNumber = playNumer;
     }
 
     public String getDesc() {
@@ -101,7 +101,7 @@ public class Match implements Serializable {
             "matchId = " + matchId +
             ", time = " + time +
             ", address = " + address +
-            ", playNumer = " + playNumer +
+            ", playNumer = " + playNumber +
             ", desc = " + desc +
             ", minPoints = " + minPoints +
             ", awards = " + awards +

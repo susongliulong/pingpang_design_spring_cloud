@@ -1,5 +1,5 @@
 <template>
-    <div class="clear">
+    <div class="clear" style="margin-left: 100px; margin-top: 20px;">
 
         <div class="left" style="margin-right: 10px;">
             <img src="../../assets/login/pingpang_avator.png" alt="" style="width: 90px; height: 90px;">
@@ -11,7 +11,7 @@
 
         <div id="register" class="left">
             <p id="title">账号注册</p>
-            <p style="font-size: 12px;color: gray">已有账号，<a href="" style="font-size: 16px;">登录</a></p>
+            <p style="font-size: 12px;color: gray">已有账号，<router-link to="/login">登录</router-link></p>
             <br>
             <el-form ref="dataRef" :model="ruleForm" :rules="rules" label-width="auto" class="demo-ruleForm"
                 size="small" status-icon>

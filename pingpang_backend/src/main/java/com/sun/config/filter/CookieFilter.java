@@ -31,7 +31,10 @@ public class CookieFilter extends HttpFilter {
             "/admin/login",
             "/admin/register",
             "/admin/checkAdmin",
-            "/user/test"
+            "/user/test",
+            "/admin",
+            "/thing",
+            "/"
     };
 
     @Override

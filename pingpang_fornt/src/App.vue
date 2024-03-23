@@ -1,12 +1,12 @@
 <template>
   <div id="content">
-      <RegisterVue></RegisterVue>
+      <router-view></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from "vue"
-import RegisterVue from '@/components/login_register/RegisterVue.vue'
+
 
 
 
@@ -32,17 +32,6 @@ body::before {
   background-repeat: no-repeat;
   background-position-x: center;
 
-}
-#content{
-  margin-top: 20px;
-  margin-left: 100px;
-}
-
-.center {
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  transform: translate(-50%, -50%);
 }
 
 a {
@@ -76,3 +65,4 @@ input {
   clear: both;
 }
 </style>
+./components/login_register/LoginView.vue

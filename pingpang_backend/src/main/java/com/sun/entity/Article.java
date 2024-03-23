@@ -18,6 +18,8 @@ public class Article implements Serializable {
 
     private String content;
 
+    private Long categoryId;
+
     public Long getArticleId() {
         return articleId;
     }
@@ -26,6 +28,13 @@ public class Article implements Serializable {
         this.articleId = articleId;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
     public String getContent() {
         return content;
     }
@@ -41,4 +50,5 @@ public class Article implements Serializable {
             ", content = " + content +
         "}";
     }
+
 }

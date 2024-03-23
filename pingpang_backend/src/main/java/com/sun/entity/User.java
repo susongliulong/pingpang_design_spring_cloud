@@ -17,11 +17,11 @@ public class User implements Serializable {
 
     private Long id;
 
-    private String avator;
+    private String avatar;
 
     private Integer state;
 
-    private LocalDateTime llastLoginTime;
+    private LocalDateTime lastLoginTime;
 
     private Integer playYears;
 
@@ -33,12 +33,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getAvator() {
-        return avator;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvator(String avator) {
-        this.avator = avator;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public Integer getState() {
@@ -49,12 +49,12 @@ public class User implements Serializable {
         this.state = state;
     }
 
-    public LocalDateTime getLlastLoginTime() {
-        return llastLoginTime;
+    public LocalDateTime getLastLoginTime() {
+        return lastLoginTime;
     }
 
-    public void setLlastLoginTime(LocalDateTime llastLoginTime) {
-        this.llastLoginTime = llastLoginTime;
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
 
     public Integer getPlayYears() {
@@ -69,9 +69,9 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
             "id = " + id +
-            ", avator = " + avator +
+            ", avator = " + avatar +
             ", state = " + state +
-            ", llastLoginTime = " + llastLoginTime +
+            ", llastLoginTime = " + lastLoginTime +
             ", playYears = " + playYears +
         "}";
     }
