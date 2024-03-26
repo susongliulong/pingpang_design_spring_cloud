@@ -4,7 +4,7 @@
             <p>创作中心</p>
             <div class="first clear">
 
-                <div class="item">
+                <div class="item" @click="writeTutorial">
                     <a href="">
                         <Edit
                             style="width: 30px; height: 30px; display: block;margin-left: 15px;margin-bottom: 10px;" />
@@ -12,7 +12,7 @@
                     </a>
                 </div>
 
-                <div class="item">
+                <div class="item" @click="router.push('/main/write_match')">
                     <a href="">
                         <Odometer
                             style="width: 30px; height: 30px; display: block;margin-left: 15px;margin-bottom: 10px;" />
@@ -20,7 +20,7 @@
                     </a>
                 </div>
 
-                <div class="item">
+                <div class="item" @click="router.push('/main/write_news')">
                     <a href="">
                         <Message
                             style="width: 30px; height: 30px; display: block;margin-left: 15px;margin-bottom: 10px;" />
@@ -65,6 +65,7 @@
 </template>
 <script setup lang="ts">
 import { ref, reactive } from "vue"
+import { useRouter } from "vue-router";
 
 //用户基本信息
 interface UserMessage {
@@ -99,6 +100,12 @@ const matches = ref<Match[]>([{
     awrards: 48 // 积分奖励
 }])
 
+const router = useRouter();
+
+function writeTutorial(){
+    router.push('/main/write_tutorial')
+}
+
 
 
 </script>
@@ -125,7 +132,7 @@ const matches = ref<Match[]>([{
 
 .box .first .item {
     float: left;
-    margin-right: 30px;
+    margin-right: 50px;
 }
 
 .box .first .item:last-child {

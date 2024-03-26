@@ -18,7 +18,7 @@ public class Tutorial implements Serializable {
 
     private String level;
 
-    private String sutiableObject;
+    private String suitableObject;
 
     private String content;
 
@@ -38,12 +38,12 @@ public class Tutorial implements Serializable {
         this.level = level;
     }
 
-    public String getSutiableObject() {
-        return sutiableObject;
+    public String getSuitableObject() {
+        return suitableObject;
     }
 
-    public void setSutiableObject(String sutiableObject) {
-        this.sutiableObject = sutiableObject;
+    public void setSuitableObject(String suitableObject) {
+        this.suitableObject = suitableObject;
     }
 
     public String getContent() {
@@ -59,7 +59,7 @@ public class Tutorial implements Serializable {
         return "Tutorial{" +
             "tutorialId = " + tutorialId +
             ", level = " + level +
-            ", sutiableObject = " + sutiableObject +
+            ", sutiableObject = " + suitableObject +
             ", content = " + content +
         "}";
     }

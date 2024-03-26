@@ -149,7 +149,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, onBeforeMount } from "vue";
 interface User {
   id: bigint;
   name: string;
@@ -231,6 +231,16 @@ const comments = ref<Comment[]>([
     dislikes: 1234,
   },
 ]);
+
+// 钩子函数
+onBeforeMount(() => {
+  
+})
+
+// 初始化前10条评论信息，每条评论下面包含三条子评论
+function initialComments() {
+  
+}
 
 // 评论分页条相关方法
 const handleSizeChange = (val: number) => {

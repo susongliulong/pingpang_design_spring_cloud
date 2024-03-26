@@ -65,4 +65,3 @@ input {
   clear: both;
 }
 </style>
-./components/login_register/LoginView.vue

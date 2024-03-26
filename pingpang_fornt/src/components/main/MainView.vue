@@ -12,14 +12,14 @@
             <!-- 搜索框 -->
             <div id="search" class="left">
                 <el-autocomplete popper-class="my-autocomplete" v-model="keyWord" :fetch-suggestions="querySearch"
-                    placeholder="请输入内容" @select="handleSelect" :trigger-on-focus="false">
+                    placeholder="尝试全站搜索" @select="handleSelect" :trigger-on-focus="false">
                 </el-autocomplete>
                 <button v-on:click="searchArticles">搜索</button>
             </div>
 
             <div class="right">
                 <span><i><img :src=userMessage.img style="width: 40px; height: 40px;"></i></span>
-                <span><i class="el-icon-edit" style="font-size: 24px;"></i><a href="">编辑</a></span>
+                <span @click="router.push('/main')"><i class="el-icon-edit" style="font-size: 24px;"></i><a href="javaScript:void(0);">进行创作</a></span>
                 <span><i class="el-icon-message" style="font-size: 24px;"></i><a href="">消息</a></span>
             </div>
         </div>
@@ -203,6 +203,10 @@ const searchArticles = () => {
 }
 
 /* 搜索框内容 */
+#search{
+    margin-top: 8px;
+}
+
 #search input {
     height: 30px;
     width: 400px;
@@ -216,6 +220,7 @@ const searchArticles = () => {
 }
 
 #search button {
+    margin-left: 10px;
     height: 30px;
     width: 60px;
     border: 1px solid #056de8;
