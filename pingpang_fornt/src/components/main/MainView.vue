@@ -18,7 +18,7 @@
             </div>
 
             <div class="right">
-                <span><i><img :src=userMessage.img style="width: 40px; height: 40px;"></i></span>
+                <span id="img" @click="router.push('/main/register')"><i><img :src=userMessage.img style="width: 40px; height: 40px;"></i></span>
                 <span @click="router.push('/main')"><i class="el-icon-edit" style="font-size: 24px;"></i><a href="javaScript:void(0);">进行创作</a></span>
                 <span><i class="el-icon-message" style="font-size: 24px;"></i><a href="">消息</a></span>
             </div>
@@ -200,6 +200,9 @@ const searchArticles = () => {
 #header .right span {
     float: right;
     margin: 0 20px;
+}
+#header .right #img:hover{
+    cursor: pointer;
 }
 
 /* 搜索框内容 */

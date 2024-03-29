@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 
+// 登录和注册界面
 import LoginView from "@/components/login_register/LoginView.vue";
 import RegisterView from "@/components/login_register/RegisterView.vue";
 import NullVue from "@/NullVue.vue";
 
 // 登陆成功以后用户主界面
+import PersonalMessage from "@/components/login_register/PersonalMessage.vue";// 修改个人信息
 import MainView from "@/components/main/MainView.vue";
 import AsideBar from "@/components/main/AsideBar.vue";
 import NewsView from "@/components/main/news/NewsView.vue";
@@ -14,6 +16,7 @@ import MatchView from "@/components/main/match/MatchView.vue";
 // 教程编写界面
 import TutorialVue from "@/components/main/tutorial/TutorialVue.vue";
 import MatchVue from "@/components/main/match/MatchVue.vue";
+import NewsVue from "@/components/main/news/NewsVue.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +29,14 @@ const router = createRouter({
       redirect: "/main/news", // 重定向到乒乓球资讯界面
       component: MainView,
       children: [
+       // 修改个人信息
+        {
+          path: "register",
+          name: "register",
+          components: {
+            MainContent: PersonalMessage,
+          },
+        },
         // 配置子路由
         {
           path: "news",
@@ -66,6 +77,15 @@ const router = createRouter({
           name: "write_match",
           components: {
             MainContent: MatchVue,
+            // AsideBar: NullVue,
+          },
+        },
+        // 编写新闻
+        {
+          path: "write_news",
+          name: "write_news",
+          components: {
+            MainContent: NewsVue,
             // AsideBar: NullVue,
           },
         },

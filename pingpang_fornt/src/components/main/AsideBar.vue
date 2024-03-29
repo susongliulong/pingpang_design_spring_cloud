@@ -46,7 +46,7 @@
             </div>
 
             <div style="margin-top: 30px;">
-                <el-button type="primary" size="small" style="height: 40px;width: 324px;">
+                <el-button type="primary" size="small" style="height: 40px;width: 324px;" @click="router.push('/main/write_news')">
                     <span>进入创作中心</span>
                 </el-button>
             </div>
