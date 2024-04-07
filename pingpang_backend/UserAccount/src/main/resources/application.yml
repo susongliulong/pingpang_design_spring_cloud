@@ -1,0 +1,19 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: UserAccount
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: "1234"
+    url: jdbc:mysql://localhost:3306/pingpang?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+mp:
+  outputDir: D:\10.软件工程课程\软件工程大四上\毕业论文\pingpang_backend\UserAccount\src\main\java
+
+avatar:
+  location: D:\imgs\avatar\

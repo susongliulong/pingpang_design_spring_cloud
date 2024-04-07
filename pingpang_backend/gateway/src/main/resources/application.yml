@@ -1,0 +1,38 @@
+server:
+  port: 12345
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+            maxAge: 30
+      routes:
+        - id: user_account
+          uri: lb://User
+          predicates:
+            - Path=/user/**
+        - id: checkCode
+          uri: lb://UserAccount
+          predicates:
+            - Path=/code/get
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+    reactor.netty: DEBUG
