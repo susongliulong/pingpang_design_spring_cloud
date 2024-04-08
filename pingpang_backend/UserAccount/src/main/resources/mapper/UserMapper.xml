@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loong.mapper.UserMapper">
+
+    <insert id="insertInterest">
+        insert into user_interest values (#{userId},#{interestId})
+    </insert>
+
+    <select id="selectInterests" resultType="java.lang.Integer">
+        select interest_id from user_interest where user_id=#{userId};
+    </select>
+</mapper>

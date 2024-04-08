@@ -26,6 +26,7 @@ public class UserController {
         if(agree<=0){
             return R.error("请先勾选同意协议");
         }
+        // 调用服务判断账号密码是否匹配
         R result = userFeign.login(account, password);
         if(result.getCode()==200){
             // 判断验证码是否正确
@@ -37,5 +38,6 @@ public class UserController {
         }
         return result;
     }
+
 
 }

@@ -23,7 +23,7 @@ public class AvatarController {
     @PostMapping("/upload")
     public R upload(@RequestBody MultipartFile file) {
         String fileName = FileUpUtil.upFile(file, path);
-        return R.success(path + fileName, "文件上传成功");
+        return R.success(fileName, "文件上传成功");
     }
 
     @GetMapping("/download")

@@ -3,6 +3,24 @@ server:
 spring:
   application:
     name: UserAccount
+  data:
+    redis:
+      host: localhost
+      # redis端口（默认6379）
+      port: 6379
+      #redis连接超时等待,10秒
+      timeout: PT10S
+      # redis访问密码（默认为空）
+      lettuce:
+        pool:
+          # 连接池最大连接数（使用负值表示没有限制） 默认 8
+          max-active:  50
+          # 连接池中的最大空闲连接 默认 8
+          max-idle: 20
+          # 连接池中的最小空闲连接 默认 0
+          min-idle: 1
+          # 连接池最大阻塞等待时间(使用负值表示没有限制) 默认 -1，这里配置10s
+          max-wait: PT10S
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -12,6 +30,8 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
 mp:
   outputDir: D:\10.软件工程课程\软件工程大四上\毕业论文\pingpang_backend\UserAccount\src\main\java
 

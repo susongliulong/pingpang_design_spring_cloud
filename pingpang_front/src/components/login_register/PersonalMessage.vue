@@ -4,7 +4,7 @@
       <p id="title">账号信息修改</p>
       <br />
       <el-form
-        :ref="ruleFormRef"
+        ref="dataRef"
         :model="ruleForm"
         :rules="rules"
         label-width="auto"
@@ -17,12 +17,12 @@
             <el-form-item label="用户头像">
               <el-upload
                 class="avatar-uploader"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                :action="gatewayUrl+'/avatar/upload'"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                <img v-if="ruleForm.avatar" :src="ruleForm.avatar" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
               </el-upload>
             </el-form-item>
@@ -32,10 +32,10 @@
               <el-input v-model="ruleForm.name" />
             </el-form-item>
             <el-form-item label="手机号" prop="telephone">
-              <el-input v-model="ruleForm.telephone" />
+              <el-input v-model="ruleForm.telephone" readonly />
             </el-form-item>
             <el-form-item label="邮箱" prop="email">
-              <el-input v-model="ruleForm.email" />
+              <el-input v-model="ruleForm.email" readonly />
             </el-form-item>
             <el-form-item label="密码" prop="password">
               <el-input v-model="ruleForm.password" type="password" />
@@ -45,11 +45,11 @@
             </el-form-item>
             <el-form-item label="球龄" prop="playYears">
               <el-radio-group v-model="ruleForm.playYears">
-                <el-radio label="1月" value="1" />
-                <el-radio label="3月" value="3" />
-                <el-radio label="1年" value="12" />
-                <el-radio label="5年" value="60" />
-                <el-radio label="10年" value="120" />
+                <el-radio label="1月" :value="1" />
+                <el-radio label="3月" :value="3" />
+                <el-radio label="1年" :value="12" />
+                <el-radio label="5年" :value="60"/>
+                <el-radio label="10年" :value="120" />
               </el-radio-group>
             </el-form-item>
             <el-form-item label="感兴趣话题" prop="interests">
@@ -66,21 +66,15 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="验证码" prop="checkcode">
-              <el-input
-                v-model="ruleForm.checkcode"
-                style="width: 100px; margin-right: 20px"
-              /><img src="" alt="" style="width: 90px; height: 32px" />
-            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="19">
             <el-form-item style="margin-left:300px;">
-              <el-button type="primary" @click="submitForm(ruleFormRef)">
+              <el-button type="primary" @click="submitForm(dataRef)">
                 确认修还
               </el-button>
-              <el-button @click="resetForm(ruleFormRef)" type="danger">重新输入</el-button>
+              <el-button @click="resetForm(dataRef)" type="danger">重新输入</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -90,27 +84,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive ,onBeforeMount} from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { ElMessage } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import type { UploadProps } from "element-plus";
+import axios from 'axios';
+
+import {gatewayUrl} from "@/global";
+import router from "@/router";
 
 interface RuleForm {
+  id: bigint;
   name: string;
+  avatar: string;
   telephone: string;
   email: string;
   password: string;
   confirm: string;
   playYears: number;
-  interests: number[];
+  interests: any[];
   checkcode: string;
 }
 
-const formSize = ref("default");
-const ruleFormRef = ref<FormInstance>();
-const ruleForm = reactive<RuleForm>({
+const dataRef = ref<FormInstance>();
+const ruleForm = ref<RuleForm>({
+  id:123,
   name: "liu",
+  avatar:"",
   telephone: "17812345678",
   email: "123Rhhh@163.com",
   password: "123456Hh@",
@@ -119,24 +120,22 @@ const ruleForm = reactive<RuleForm>({
   interests: [],
   checkcode: "",
 });
-// 图像上传
-const imageUrl = ref("");
 
 const interest_options = [
   {
-    value: "1",
+    value: 1,
     label: "乒乓球资讯",
   },
   {
-    value: "2",
+    value: 2,
     label: "乒乓球入门",
   },
   {
-    value: "3",
+    value: 3,
     label: "乒乓球交流",
   },
   {
-    value: "4",
+    value: 4,
     label: "提高球技",
   },
 ];
@@ -178,14 +177,47 @@ const rules = reactive<FormRules<RuleForm>>({
     },
   ],
 });
+ 
+// 回显用户的个人信息
+onBeforeMount(() => {
+  const userString=sessionStorage.getItem("user");
+  if (userString != null) {
+    const user = JSON.parse(userString);
+    ruleForm.value = user;
+    axios.get(gatewayUrl + '/user/interests/' + user.id).then(resp => {
+      ruleForm.value.interests = resp.data.data;
+    })
+  } else {
+    // 跳转到登录界面
+  }
+})
 
+
+
+// 用户修改个人信息之后，提交
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log("submit!");
+      if (ruleForm.value.password == ruleForm.value.confirm) {
+        // 发送请求
+        axios({
+          url: gatewayUrl + '/user/update',
+          method: 'post',
+          data:ruleForm.value
+        }).then(resp => {
+          if (resp.data.code == 200) {
+            ElMessage.success("账号信息修改成功");
+            router.push("/main");
+          } else{
+            ElMessage.error("账号信息修改错误");
+          }
+        })
+      } else {
+        ElMessage.error("两次输入的密码不一致");
+      }
     } else {
-      console.log("error submit!", fields);
+      ElMessage.error("按要求重新输入");
     }
   });
 };
@@ -195,25 +227,27 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields();
 };
 
-// 图像上传
+// 图像上传成功以后，后台返回头像的名称
 const handleAvatarSuccess: UploadProps["onSuccess"] = (
   response,
   uploadFile
 ) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!); // 生成image的地址
+  console.log(response, uploadFile);
+  ruleForm.value.avatar = gatewayUrl + '/avatar/download?filename=' + response.data;
 };
 
 // 图像上传之前进行校验
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
   if (rawFile.type !== "image/jpeg") {
-    ElMessage.error("Avatar picture must be JPG format!");
+    ElMessage.error("照片格式为jpeg");
     return false;
   } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error("Avatar picture size can not exceed 2MB!");
+    ElMessage.error("照片大小应该小于2MB!");
     return false;
   }
   return true;
 };
+
 </script>
 
 <style scoped>

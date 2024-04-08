@@ -18,7 +18,7 @@
             </div>
 
             <div class="right">
-                <span id="img" @click="router.push('/main/register')"><i><img :src=userMessage.img style="width: 40px; height: 40px;"></i></span>
+                <span id="img" @click="router.push('/main/register')"><i><img :src="userMessage.avatar" style="width: 40px; height: 40px;"></i></span>
                 <span @click="router.push('/main')"><i class="el-icon-edit" style="font-size: 24px;"></i><a href="javaScript:void(0);">进行创作</a></span>
                 <span><i class="el-icon-message" style="font-size: 24px;"></i><a href="">消息</a></span>
             </div>
@@ -46,7 +46,7 @@ import { useRouter } from "vue-router"
 
 //用户基本信息
 interface UserMessage {
-    img: String,
+    avatar: String,
     fans: number,
     focus: number,
 }
@@ -80,7 +80,7 @@ interface Match {
 const router = useRouter()
 const keyWord = ref('')
 const userMessage = ref<UserMessage>({
-    img: "background.png",
+    avatar: "background.png",
     fans: 1000,
     focus: 1000,
 })
@@ -105,6 +105,13 @@ onBeforeMount(() => {
     const routerName = router.currentRoute.value.name;
     if (routerName !== null && routerName !==undefined) {
         activeName.value = routerName.toString();
+
+        // 跟新照片数据
+        const userString=sessionStorage.getItem("user")
+        if (userString != null) {
+            const user = JSON.parse(userString);
+            userMessage.value.avatar = user.avatar;
+        }
     }
 })
 

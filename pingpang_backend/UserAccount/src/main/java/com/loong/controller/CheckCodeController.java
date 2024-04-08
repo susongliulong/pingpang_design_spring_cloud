@@ -77,9 +77,6 @@ public class CheckCodeController {
     }
 
 
-
-
-
     // 生成随机字符串
     private String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

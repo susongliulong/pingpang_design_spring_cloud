@@ -9,6 +9,7 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins: "*"
+            allowed-headers: "*"
             allowedMethods:
               - GET
               - POST
@@ -16,14 +17,15 @@ spring:
               - PUT
             maxAge: 30
       routes:
-        - id: user_account
+        - id: user_module
           uri: lb://User
           predicates:
-            - Path=/user/**
-        - id: checkCode
+            - Path=/user/login
+
+        - id: user_account
           uri: lb://UserAccount
           predicates:
-            - Path=/code/get
+            - Path=/code/**,/avatar/**,/user/**,/user/interests/**
 eureka:
   client:
     service-url:

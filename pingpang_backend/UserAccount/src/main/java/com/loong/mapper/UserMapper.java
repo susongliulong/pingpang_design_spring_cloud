@@ -2,6 +2,9 @@ package com.loong.mapper;
 
 import com.loong.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    void insertInterest(Long userId, Integer interestId);
+
+    List<Integer> selectInterests(long userId);
+
+    @Delete("delete from user_interest where user_id = #{userId}")
+    void deleteInterestsById(long userId);
 }
