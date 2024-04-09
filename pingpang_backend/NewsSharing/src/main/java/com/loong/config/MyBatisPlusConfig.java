@@ -11,7 +11,6 @@ public class MyBatisPlusConfig {
 
     /**
      * 分页插件配置
-     *
      * @return
      */
     @Bean

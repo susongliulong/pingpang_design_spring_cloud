@@ -1,38 +1,25 @@
 package com.loong;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.loong.service.INewsService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class NewsSharingApplicationTest
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+    @Autowired
+    private INewsService iNewsService;
+    @Test
+    public void test(){
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+        iNewsService.recommendArticles().forEach(System.out::println);
     }
 }

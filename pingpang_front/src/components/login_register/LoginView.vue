@@ -77,7 +77,7 @@ const login = () => {
         alert(resp.data.message);
         if (resp.data.code == 200) {
             const user = resp.data.data;
-            sessionStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("user", JSON.stringify(user));
             router.push("/main")
         }
     })

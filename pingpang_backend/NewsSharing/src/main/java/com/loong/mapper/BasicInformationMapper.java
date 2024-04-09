@@ -3,6 +3,8 @@ package com.loong.mapper;
 import com.loong.entity.BasicInformation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface BasicInformationMapper extends BaseMapper<BasicInformation> {
 
+    List<Object> getAllTopics();
 }

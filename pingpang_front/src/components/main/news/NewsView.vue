@@ -47,8 +47,10 @@
   </div>
 </template>
 <script setup lang="ts">
+import axios from "axios";
 import { ref } from "vue";
 import { onBeforeMount, onMounted } from "vue";
+import { gatewayUrl } from "@/global";
 
 // 文章描述信息
 interface Article {
@@ -62,6 +64,25 @@ interface Article {
 
 // 文章信息
 const articles = ref<Article[]>([{}]);
+
+onBeforeMount(() => {
+  // 根据用户感兴趣的话题加载文章信息
+  const userString = localStorage.getItem("user");
+  if (userString != null) {
+    const interests = JSON.parse(userString).interests;
+    initialArticles(interests);
+  }
+})
+
+// 初始化资讯信息,其中interests为用户感兴趣的话题，用来向用户推荐感兴趣的信息
+function initialArticles(interests:number[]) {
+  axios({
+    url: gatewayUrl + '/news/overview',
+    method:'get'
+  }).then(resp => {
+    articles.value = resp.data.data;
+  })
+}
 </script>
 <style scoped>
 #content {

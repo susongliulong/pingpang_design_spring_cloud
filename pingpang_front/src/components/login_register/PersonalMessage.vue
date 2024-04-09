@@ -180,7 +180,7 @@ const rules = reactive<FormRules<RuleForm>>({
  
 // 回显用户的个人信息
 onBeforeMount(() => {
-  const userString=sessionStorage.getItem("user");
+  const userString=localStorage.getItem("user");
   if (userString != null) {
     const user = JSON.parse(userString);
     ruleForm.value = user;

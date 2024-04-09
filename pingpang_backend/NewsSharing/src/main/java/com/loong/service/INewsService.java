@@ -1,7 +1,10 @@
 package com.loong.service;
 
+import com.loong.entity.BasicInformation;
 import com.loong.entity.News;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface INewsService extends IService<News> {
 
+    List<BasicInformation> recommendArticles();
+
+    List<BasicInformation> recommendArticles(List<Integer> integers);
 }

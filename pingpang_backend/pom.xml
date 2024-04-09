@@ -15,6 +15,7 @@
     <module>UserRequestDispatcher</module>
     <module>UserAccount</module>
       <module>CommentRegulation</module>
+      <module>NewsSharing</module>
   </modules>
 
   <name>pingpang_backend</name>

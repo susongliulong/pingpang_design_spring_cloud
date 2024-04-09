@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.loong.mapper.BasicInformationMapper">
 
+
+    <resultMap id="newsCategory" type="com.loong.entity.NewsCategory">
+
+        <id jdbcType="bigint" javaType="java.lang.Long"/>
+        <result column="name" jdbcType="varchar" javaType="java.lang.String"/>
+    </resultMap>
+
+    <select id="getAllTopics" resultType="java.lang.Integer" resultMap="newsCategory">
+        select * from news_category;
+    </select>
 </mapper>
