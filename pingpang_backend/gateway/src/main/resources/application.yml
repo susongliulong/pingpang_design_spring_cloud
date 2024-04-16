@@ -26,6 +26,11 @@ spring:
           uri: lb://UserAccount
           predicates:
             - Path=/code/**,/avatar/**,/user/**,/user/interests/**
+
+        - id: news_sharing
+          uri: lb://NewsSharing
+          predicates:
+            - Path=/news/**
 eureka:
   client:
     service-url:

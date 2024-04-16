@@ -2,11 +2,11 @@ package com.loong.controller;
 
 import com.loong.common.R;
 import com.loong.entity.BasicInformation;
+import com.loong.entity.News;
+import com.loong.service.IInterestService;
 import com.loong.service.INewsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,17 +30,49 @@ public class NewsController {
      */
     @Autowired
     private INewsService iNewsService;
+    @Autowired
+    private IInterestService iInterestService;
 
     @GetMapping("/overview")
-    public R overview(List<Integer> integers) {
+    public R overview(@RequestParam(value = "integers", required = false) List<Integer> integers,
+    @RequestParam(value = "page", required = false) Integer page) {
         // 处理为空的情况
         List<BasicInformation> articles;
         if (integers == null || integers.isEmpty()) {
-            articles = iNewsService.recommendArticles();
+            articles = iNewsService.recommendArticles(page);
         } else {
             // 处理不为空的情况
-            articles = iNewsService.recommendArticles(integers);
+            articles = iNewsService.recommendArticles(integers,page);
         }
         return R.success(articles);
+    }
+
+    @PostMapping("/update")
+    public R updateNewsMessage(@RequestBody BasicInformation basicInformation){
+
+        iNewsService.updateNewsMessage(basicInformation);
+        return R.success("更新成功");
+    }
+
+
+    /**
+     * 根据newsId获取新闻的详细信息并且返回
+     * @param newsId 新闻id
+     * @return 新闻的详细信息
+     */
+    @GetMapping("/message/{newsId}")
+    public R newsMessage(@PathVariable long newsId){
+        News news = iNewsService.getNewsMessage(newsId);
+        return R.success(news);
+    }
+
+    @GetMapping("/interestName/{interestId}")
+    public R getInterestName(@PathVariable long interestId){
+        return R.success(iInterestService.getById(interestId));
+    }
+
+    @GetMapping("/author/{authorId}")
+    public R getNewsAuthor(@PathVariable long authorId){
+        return R.success(iNewsService.getNewsAuthor(authorId));
     }
 }

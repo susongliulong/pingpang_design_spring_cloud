@@ -9,4 +9,6 @@ public class NewsCategory {
 
     private long id;
     private String name;
+
+    private Integer hots;
 }

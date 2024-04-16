@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: NewsSharing
+    # 配置热部署
+  devtools:
+    restart:
+      enabled: true
   data:
     redis:
       host: localhost
@@ -25,7 +29,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: "1234"
-    url: jdbc:mysql://localhost:3306/pingpang?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/pingpang_news_db?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
 eureka:
   client:
     service-url:

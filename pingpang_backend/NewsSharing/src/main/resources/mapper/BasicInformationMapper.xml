@@ -4,12 +4,13 @@
 
 
     <resultMap id="newsCategory" type="com.loong.entity.NewsCategory">
-
-        <id jdbcType="bigint" javaType="java.lang.Long"/>
-        <result column="name" jdbcType="varchar" javaType="java.lang.String"/>
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="hots" column="hots" />
     </resultMap>
 
-    <select id="getAllTopics" resultType="java.lang.Integer" resultMap="newsCategory">
-        select * from news_category;
+    <select id="getAllTopics" resultMap="newsCategory">
+        select * from interest;
     </select>
+
 </mapper>

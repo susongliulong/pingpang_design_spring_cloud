@@ -26,7 +26,7 @@
 
         <div id="main" class="clear">
 
-            <div >
+            <div id="content">
                 <RouterView name="MainContent"></RouterView>
             </div>
 
@@ -53,12 +53,13 @@ interface UserMessage {
 
 // 文章描述信息
 interface Article {
-    title: String,
-    img: String,
-    mainContent: String,
-    likes: number,
-    dislikes: number,
-    watches: number, // 用户收藏量
+  title: String;
+  coverImage: String;
+  mainContent: String;
+  likes: number;
+  comments: number;
+  collects: number; // 用户收藏量
+  pageView: number; // 浏览量
 }
 
 // 推荐关键词列表
@@ -99,15 +100,13 @@ const matches = ref<Match[]>([{
 const activeName = ref('news')
 
 
-
-
 onBeforeMount(() => {
     const routerName = router.currentRoute.value.name;
     if (routerName !== null && routerName !==undefined) {
         activeName.value = routerName.toString();
 
         // 跟新照片数据
-        const userString=sessionStorage.getItem("user")
+        const userString=localStorage.getItem("user")
         if (userString != null) {
             const user = JSON.parse(userString);
             userMessage.value.avatar = user.avatar;
@@ -175,6 +174,10 @@ const searchArticles = () => {
 
 }
 
+// 展示文章的详情信息
+function newsMessage(news:Article) {
+    console.log(news);
+}
 
 </script>
 <style scoped>
@@ -269,12 +272,15 @@ const searchArticles = () => {
     height: 800px;
 }
 
-
+#content {
+  margin: 10px 0px;
+  float: left;
+}
 
 #aside {
+    margin-top: 10px;
     width: 30%;
-    float: left;
-    margin-left: 10px;
+    float: right;
 }
 
 #create_article .first {

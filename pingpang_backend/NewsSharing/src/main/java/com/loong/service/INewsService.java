@@ -16,7 +16,13 @@ import java.util.List;
  */
 public interface INewsService extends IService<News> {
 
-    List<BasicInformation> recommendArticles();
+    List<BasicInformation> recommendArticles(Integer page);
 
-    List<BasicInformation> recommendArticles(List<Integer> integers);
+    List<BasicInformation> recommendArticles(List<Integer> integers,Integer page);
+
+    void updateNewsMessage(BasicInformation basicInformation);
+
+    News getNewsMessage(long newsId);
+
+    String getNewsAuthor(long authorId);
 }

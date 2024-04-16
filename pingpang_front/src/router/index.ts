@@ -17,6 +17,7 @@ import MatchView from "@/components/main/match/MatchView.vue";
 import TutorialVue from "@/components/main/tutorial/TutorialVue.vue";
 import MatchVue from "@/components/main/match/MatchVue.vue";
 import NewsVue from "@/components/main/news/NewsVue.vue";
+import NewsMessageView from "@/components/main/news/NewsMessageView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,13 @@ const router = createRouter({
             MainContent: NewsView,
             AsideBar: AsideBar,
           },
+        },
+        {
+          path: "news_message",
+          name: "news_message",
+          components: {
+            MainContent: NewsMessageView
+          }
         },
         {
           path: "tutorial",

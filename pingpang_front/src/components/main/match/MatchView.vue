@@ -124,7 +124,7 @@ const matches = ref<Match[]>([
   {
     title: "一年一度新生杯决赛",
     minPoints: 0,
-    playerNumber: 1200,
+    playerNumber: 150,
     holder: "计算机学院",
     level: "新手",
     points: 12,
@@ -132,6 +132,18 @@ const matches = ref<Match[]>([
     matchStartTime: new Date(),
     signupEndTime: new Date(),
     matchLocation: "广东工业大学计算机学院",
+  },
+  {
+    title: "生物医药学院院内部选拔赛",
+    minPoints: 0,
+    playerNumber: 60,
+    holder: "生物医药学院",
+    level: "新手",
+    points: 12,
+    desc: "生物医药学院内部选拔赛旨在筛选出乒乓球运动种子选手参加后续赛事",
+    matchStartTime: new Date(),
+    signupEndTime: new Date(),
+    matchLocation: "广东工业大学生物医药学院",
   },
 ]);
 
@@ -147,6 +159,7 @@ const submit = () => {};
   padding:20px;
   background-color: white;
   border: 1px solid red;
+  margin-bottom: 10px;
 }
 .match-box .el-row{
   margin-bottom: 15px;

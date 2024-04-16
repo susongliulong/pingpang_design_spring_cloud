@@ -2,6 +2,7 @@ package com.loong.mapper;
 
 import com.loong.entity.News;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface NewsMapper extends BaseMapper<News> {
 
+    @Select("select name from user where id = #{authorId}")
+    String getNewsAuthor(long authorId);
 }
