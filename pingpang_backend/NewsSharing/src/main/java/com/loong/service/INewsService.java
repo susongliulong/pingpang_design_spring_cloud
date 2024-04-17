@@ -1,6 +1,7 @@
 package com.loong.service;
 
 import com.loong.entity.BasicInformation;
+import com.loong.entity.LinkItem;
 import com.loong.entity.News;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -25,4 +26,8 @@ public interface INewsService extends IService<News> {
     News getNewsMessage(long newsId);
 
     String getNewsAuthor(long authorId);
+
+    List<BasicInformation> getNewsByKeyWord(String keyWord);
+
+    List<LinkItem> getKeyWords(String keyWord);
 }

@@ -2,6 +2,7 @@ package com.loong.mapper;
 
 import com.loong.entity.BasicInformation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.loong.entity.LinkItem;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ import java.util.List;
 public interface BasicInformationMapper extends BaseMapper<BasicInformation> {
 
     List<Object> getAllTopics();
+
+    List<LinkItem> getKeyWords(String keyWord);
 }

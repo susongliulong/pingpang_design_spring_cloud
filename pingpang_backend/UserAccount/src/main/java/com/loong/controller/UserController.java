@@ -5,6 +5,7 @@ import com.loong.common.R;
 import com.loong.common.state.RofAccount;
 import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
+import com.loong.entity.vo.UserVo;
 import com.loong.service.UserService;
 import com.loong.util.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,7 +58,11 @@ public class UserController {
         if (user!=null &&user.getPassword().equals(password) && user.getState() == 1) {
             //登录成功，删除键值
             redisUtil.del("login_fail_count","suspend_login");
-            return R.success(user, RofAccount.LOGIN_SUCCESS.getMessage());
+            // 查询用户感兴趣话题
+            List<Integer>interests = userService.interests(user.getId());
+            UserVo userVo = new UserVo();
+            userVo.setUser(user);userVo.setInterests(interests);
+            return R.success(userVo, RofAccount.LOGIN_SUCCESS.getMessage());
         }
         // 超过三次登录失败此时应当暂停登录一分钟
         Object count = redisUtil.get("login_fail_count");

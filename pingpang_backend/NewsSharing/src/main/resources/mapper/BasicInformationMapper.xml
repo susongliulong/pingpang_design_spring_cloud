@@ -13,4 +13,10 @@
         select * from interest;
     </select>
 
+    <select id="getKeyWords" parameterType="java.lang.String">
+        select title as value, CONCAT("http://localhost:4000/main/news?newsId=",id) as link
+        from basic_information
+        where title like concat('%',#{keyWord},'%');
+    </select>
+
 </mapper>

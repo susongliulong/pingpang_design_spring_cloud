@@ -32,7 +32,6 @@ import axios from "axios";
 
 import { gatewayUrl } from "@/global";
 
-const router = useRoute();
 const newsString = localStorage.getItem("news");
 const news = JSON.parse(newsString);
 const mainContent = ref("");

@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: User
+  # 配置热部署
+  devtools:
+    restart:
+      enabled: true
 eureka:
   client:
     service-url:

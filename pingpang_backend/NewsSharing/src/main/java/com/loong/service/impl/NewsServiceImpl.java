@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loong.entity.BasicInformation;
+import com.loong.entity.LinkItem;
 import com.loong.entity.News;
 import com.loong.entity.NewsCategory;
 import com.loong.mapper.BasicInformationMapper;
@@ -127,5 +128,24 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
     @Override
     public String getNewsAuthor(long authorId) {
         return newsMapper.getNewsAuthor(authorId);
+    }
+
+    @Override
+    public List<BasicInformation> getNewsByKeyWord(String keyWord) {
+        // 根据keyword模糊查询表basic_information中的数据
+        LambdaQueryWrapper<BasicInformation> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(BasicInformation::getTitle, keyWord);
+        queryWrapper.orderByDesc(BasicInformation::getPublishTime);
+        Page<BasicInformation> page = new Page<>(1, 20);
+        basicInformationMapper.selectPage(page, queryWrapper);
+        // 在搜索到的数据中返回最新的前20条数据
+        return page.getRecords();
+    }
+
+    @Override
+    public List<LinkItem> getKeyWords(String keyWord) {
+        List<LinkItem> keyWords = basicInformationMapper.getKeyWords(keyWord);
+        Collections.shuffle(keyWords);
+        return keyWords.subList(0, Math.min(keyWords.size(), 10));
     }
 }

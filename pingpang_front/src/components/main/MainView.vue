@@ -12,7 +12,7 @@
             <!-- 搜索框 -->
             <div id="search" class="left">
                 <el-autocomplete popper-class="my-autocomplete" v-model="keyWord" :fetch-suggestions="querySearch"
-                    placeholder="尝试全站搜索" @select="handleSelect" :trigger-on-focus="false">
+                    placeholder="搜索最新资讯" @select="handleSelect" :trigger-on-focus="false">
                 </el-autocomplete>
                 <button v-on:click="searchArticles">搜索</button>
             </div>
@@ -25,11 +25,9 @@
         </div>
 
         <div id="main" class="clear">
-
             <div id="content">
                 <RouterView name="MainContent"></RouterView>
             </div>
-
             <div id="aside">
                 <router-view name="AsideBar">
 
@@ -39,10 +37,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref ,watch} from "vue"
 import { onBeforeMount, onMounted } from "vue";
 import type { TabsPaneContext } from 'element-plus'
-import { useRouter } from "vue-router"
+import { useRouter,useRoute } from "vue-router"
+import axios from "axios";
+import gatewayUrl from "@/global";
 
 //用户基本信息
 interface UserMessage {
@@ -53,6 +53,7 @@ interface UserMessage {
 
 // 文章描述信息
 interface Article {
+  id: bigint;
   title: String;
   coverImage: String;
   mainContent: String;
@@ -64,8 +65,8 @@ interface Article {
 
 // 推荐关键词列表
 interface LinkItem {
-    value: string
-    link: string
+    value: String
+    link: String
 }
 
 // 赛事信息
@@ -78,14 +79,10 @@ interface Match {
     awrards: number // 积分奖励
 }
 
-const router = useRouter()
+const router = useRouter();
+const route = useRoute();
 const keyWord = ref('')
-const userMessage = ref<UserMessage>({
-    avatar: "background.png",
-    fans: 1000,
-    focus: 1000,
-})
-const articles = ref<Article[]>([{}])
+const userMessage = ref<UserMessage>({});
 const links = ref<LinkItem[]>([])
 const matches = ref<Match[]>([{
     matchId: 123,
@@ -100,6 +97,7 @@ const matches = ref<Match[]>([{
 const activeName = ref('news')
 
 
+
 onBeforeMount(() => {
     const routerName = router.currentRoute.value.name;
     if (routerName !== null && routerName !==undefined) {
@@ -108,60 +106,43 @@ onBeforeMount(() => {
         // 跟新照片数据
         const userString=localStorage.getItem("user")
         if (userString != null) {
-            const user = JSON.parse(userString);
+            const user = JSON.parse(userString).user;
             userMessage.value.avatar = user.avatar;
         }
     }
 })
 
-onMounted(() => {
-    links.value = loadAll()
-})
+
 
 // tabs栏目选中的时候信息跳转
 const handleClick = (tab: TabsPaneContext) => {
     router.push("/main/"+tab.props.name);
 }
 
-//  初始化文章信息
-function init() {
-
-}
 
 let timeout: any;
 
 // 在搜索框键入关键词以后进行搜索推荐
 const querySearch = (queryString: string, cb: (arg: any) => void) => {
-    const results = queryString
-        ? links.value.filter(createFilter(queryString))
-        : links.value
-
+    links.value = loadAll();
+    const results = links.value
     clearTimeout(timeout)
     timeout = setTimeout(() => {
         cb(results)
     }, 3000 * Math.random())
 }
 
-// 过滤函数
-const createFilter = (queryString: string) => {
-    return (restaurant: LinkItem) => {
-        return (
-            restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-        )
-    }
-}
 
 // 加载后台的关键数据
 function loadAll() {
-    return [
-        { value: '张继科', link: 'https://github.com/vuejs/vue' },
-        { value: '马龙', link: 'https://github.com/ElemeFE/element' },
-        { value: '樊振东', link: 'https://github.com/ElemeFE/cooking' },
-        { value: '梁靖坤', link: 'https://github.com/ElemeFE/mint-ui' },
-        { value: '许昕', link: 'https://github.com/vuejs/vuex' },
-        { value: '刘国梁', link: 'https://github.com/vuejs/vue-router' },
-        { value: '王皓', link: 'https://github.com/babel/babel' },
-    ]
+    // 加载后台关键词信息
+    let links: LinkItem[] =[];
+    axios.get(gatewayUrl + "/news/simpleKeyWord", { params: { keyWord: keyWord.value } }).then(resp => {
+        resp.data.data.forEach((item: LinkItem) => {
+            links.push(item);
+        });
+    })
+    return links;
 }
 
 // 关键词在输入框回显
@@ -171,7 +152,12 @@ const handleSelect = (item: LinkItem) => {
 
 // 点击文章搜索搜索文章
 const searchArticles = () => {
-
+    router.push({
+        path: "/main/news",
+        query: {
+            keyword: keyWord.value
+        }
+    })
 }
 
 // 展示文章的详情信息

@@ -6,6 +6,10 @@ spring:
   freemarker:
     template-loader-path: classpath:/templates/
     prefer-file-system-access: false
+    # 配置热部署
+  devtools:
+    restart:
+      enabled: true
 eureka:
   instance:
     hostname: localhost

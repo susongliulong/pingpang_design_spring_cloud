@@ -183,4 +183,10 @@ public class NewsSharingApplicationTest {
         );
     }
 
+
+    @Test
+    public void test5(){
+        System.out.println(basicInformationMapper.getKeyWords("马龙").size());
+    }
+
 }

@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: gateway
+  # 配置热部署
+  devtools:
+    restart:
+      enabled: true
   cloud:
     gateway:
       globalcors:
