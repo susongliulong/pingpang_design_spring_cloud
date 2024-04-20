@@ -4,6 +4,7 @@ import com.loong.entity.BasicInformation;
 import com.loong.entity.LinkItem;
 import com.loong.entity.News;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.loong.entity.dto.NewsDTO;
 
 import java.util.List;
 
@@ -30,4 +31,6 @@ public interface INewsService extends IService<News> {
     List<BasicInformation> getNewsByKeyWord(String keyWord);
 
     List<LinkItem> getKeyWords(String keyWord);
+
+    void saveNews(NewsDTO newsDTO);
 }

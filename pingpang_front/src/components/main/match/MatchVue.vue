@@ -2,18 +2,10 @@
   <div class="clear">
     <!-- 编辑发布赛事 -->
     <div id="header">
-      <!-- 赛事所属分类 -->
-      <el-select v-model="category" placeholder="选择分类" style="width: 150px">
-        <el-option label="入门级别" value="入门级别"></el-option>
-        <el-option label="业余级别" value="业余级别"></el-option>
-        <el-option label="专业级别" value="专业级别"></el-option>
-        <el-option label="介于入门和专业" value="介于入门和专业"></el-option>
-      </el-select>
-
       <el-button
         type="primary"
         size="default"
-        @click=""
+        @click="submit"
         style="margin-left: 20px"
         >发布</el-button
       >
@@ -34,44 +26,79 @@
         label-width="120px"
         size="small"
       >
-        <el-form-item label="赛事标题" prop="basicInformation.title">
+        <el-form-item label="赛事标题" prop="match.title">
           <el-input
-            v-model="match.basicInformation.title"
+            v-model="match.match.title"
             type="text"
             autocomplete="off"
           />
         </el-form-item>
-        <el-form-item label="比赛级别" prop="basicInformation.title">
-          <el-select v-model="match.level" placeholder="选择级别" size="small">
-            <el-option label="入门级别" value="入门级别"></el-option>
-            <el-option label="业余级别" value="业余级别"></el-option>
-            <el-option label="专业级别" value="专业级别"></el-option>
-            <el-option
-              label="介于入门和专业"
-              value="基于入门和专业"
-            ></el-option>
-          </el-select>
+        <el-form-item label="比赛级别" prop="match.title">
+          <el-input
+            v-model.number="match.match.maxNumber"
+            placeholder="输入人数"
+            size="small"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="比赛地址" prop="address">
-          <el-input v-model="match.address" type="text" autocomplete="off" />
+        <el-form-item label="比赛地址" prop="match.address">
+          <el-input
+            v-model="match.match.address"
+            type="text"
+            autocomplete="off"
+          />
         </el-form-item>
-        <el-form-item label="比赛描述" prop="desc">
-          <el-input v-model="match.desc" type="text" autocomplete="off" />
+        <el-form-item label="比赛描述" prop="match.desc">
+          <el-input
+            v-model="match.match.description"
+            type="text"
+            autocomplete="off"
+          />
         </el-form-item>
-        <el-form-item label="最低积分要求" prop="minPoints">
-          <el-input v-model="match.minPoints" type="text" autocomplete="off" />
+
+        <el-form-item label="比赛开始时间" prop="match.matchStartTime">
+          <el-date-picker
+            v-model="match.match.matchStartTime"
+            type="datetime"
+            size="small"
+          >
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="积分奖励" prop="awards">
-          <el-input v-model="match.awards" type="text" autocomplete="off" />
+
+        <el-form-item label="报名截止时间" prop="match.signUpEndTime">
+          <el-date-picker
+            v-model="match.match.signUpEndTime"
+            type="datetime"
+            size="small"
+          >
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="联系方式" prop="contact">
-          <el-input v-model="match.contact" type="text" autocomplete="off" />
+        <el-form-item label="最低积分要求" prop="match.minPoints">
+          <el-input
+            v-model.number="match.match.minPoints"
+            type="text"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="积分奖励" prop="match.awards">
+          <el-input
+            v-model="match.match.awards"
+            type="text"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="联系方式" prop="match.contact">
+          <el-input
+            v-model="match.match.contact"
+            type="text"
+            autocomplete="off"
+          />
         </el-form-item>
         <el-form-item>
           <el-button @click="resetForm(matchRef)" type="danger">重置</el-button>
         </el-form-item>
       </el-form>
       <el-divider />
+
       <div id="matches">
         <h2>已发布赛事</h2>
         <div class="match_box" v-for="(item, index) in matches" :index="index">
@@ -86,60 +113,66 @@
     </div>
 
     <div id="markdown" class="left">
-      <MdEditor v-model="content"></MdEditor>
+      <MdEditor v-model="match.content"></MdEditor>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import type { FormInstance, FormRules } from "element-plus";
+import { onBeforeMount, ref } from "vue";
+import { ElMessage, type FormInstance, type FormRules } from "element-plus";
 
 import { MdEditor } from "md-editor-v3";
+import axios from "axios";
+import gatewayUrl from "@/global";
 
-interface Basicinformation {
-  id: bigint;
-  title: string;
-  coverImage: string;
-  publishTime: Date;
-
-  likes: number;
-  comments: number;
-  collects: number; // 收藏量
-  pageView: number; // 浏览量
-  state: number;
-}
-
-// 赛事信息
 interface Match {
-  time: Date;
-  address: string;
-  playNumber: string;
-  desc: string;
+  matchId: bigint;
+  title: string;
   minPoints: number;
-  awards: number; // 积分奖励
+  playerNumber: number;
+  holder: string;
+  maxNumber: number;
+  awards: number;
+  description: string;
+  matchStartTime: Date;
+  signUpEndTime: Date;
+  address: string;
   contact: string;
-  basicInformation: BasicInformation;
+  userId: bigint;
 }
 
-// 分类信息
-const category = ref("");
-const content = ref(""); //markdown文章信息
-const match = ref<Match>({ basicInformation: {} });
+interface MatchDTO {
+  match: Match;
+  content: string;
+}
+
+onBeforeMount(() => {
+  const userString = localStorage.getItem("user");
+  if (userString != null) {
+    const user = JSON.parse(userString).user;
+    match.value.match.userId = user.id;
+  }
+})
+
+const match = ref<MatchDTO>({ match: {} });
 const matchRef = ref<FormInstance>(); // 表单信息
 // 比赛信息
-const matches = ref<Match[]>([
-  {
-    matchId: 123,
-    name: "计算机学院将举办新生杯大赛",
-    address: "学校体育楼球馆",
-    time: new Date(),
-    minPoints: 24, // 最低积分要求
-    awrards: 48, // 积分奖励
-  },
-]);
+const matches = ref<Match[]>([]);
 
 // 提交表单信息
-const submitForm = (formEl: FormInstance | undefined) => {};
+const submit = () => {
+  axios({
+    method: "post",
+    url: gatewayUrl + "/match/post",
+    data: match.value,
+  }).then((resp) => {
+    if (resp.data.code == 200) {
+      ElMessage.success(resp.data.message);
+    } else {
+      ElMessage.error("发布赛事失败");
+    }
+  });
+};
 
 // 重置表单信息
 const resetForm = (formEl: FormInstance | undefined) => {

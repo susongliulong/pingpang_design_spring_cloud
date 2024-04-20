@@ -93,4 +93,9 @@ public class NewsController {
     public R getNewsAuthor(@PathVariable long authorId){
         return R.success(iNewsService.getNewsAuthor(authorId));
     }
+
+    @GetMapping("/interests")
+    public R getInterests(){
+        return R.success(iInterestService.list());
+    }
 }

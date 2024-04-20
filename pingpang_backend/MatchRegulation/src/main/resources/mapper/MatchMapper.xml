@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loong.mapper.MatchMapper">
+    <insert id="addMatchMessage">
+        insert into match_message (match_id,content) values(#{matchId},#{content});
+    </insert>
+
+    <select id="getMatchMessage" parameterType="java.lang.Long" resultType="java.lang.String">
+        select content from match_message where match_id=#{matchId};
+    </select>
+</mapper>

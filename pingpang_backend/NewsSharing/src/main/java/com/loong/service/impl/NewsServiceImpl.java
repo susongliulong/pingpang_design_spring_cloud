@@ -7,13 +7,16 @@ import com.loong.entity.BasicInformation;
 import com.loong.entity.LinkItem;
 import com.loong.entity.News;
 import com.loong.entity.NewsCategory;
+import com.loong.entity.dto.NewsDTO;
 import com.loong.mapper.BasicInformationMapper;
 import com.loong.mapper.NewsMapper;
 import com.loong.service.INewsService;
 import com.loong.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,5 +150,30 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         List<LinkItem> keyWords = basicInformationMapper.getKeyWords(keyWord);
         Collections.shuffle(keyWords);
         return keyWords.subList(0, Math.min(keyWords.size(), 10));
+    }
+
+    @Transactional
+    @Override
+    public void saveNews(NewsDTO newsDTO) {
+
+        // 更新新闻数据
+        BasicInformation basicInformation = new BasicInformation();
+        basicInformation.setTitle(newsDTO.getTitle());
+        basicInformation.setCategoryId(newsDTO.getCategoryId());
+        basicInformation.setAuthorId(newsDTO.getAuthorId());
+        basicInformation.setCoverImage(newsDTO.getImageUrl());
+        String content = newsDTO.getContent();
+        basicInformation.setMainContent(content.substring(0, Math.min(content.length(), 100)));
+        basicInformation.setPublishTime(LocalDateTime.now());
+
+        basicInformationMapper.insert(basicInformation);
+        Long newsId = basicInformation.getId();
+
+        // 更新新闻详细信息
+        News news = new News();
+        news.setNewsId(newsId);
+        news.setCategoryId(newsDTO.getCategoryId());
+        news.setContent(content);
+        newsMapper.insert(news);
     }
 }

@@ -34,7 +34,12 @@ spring:
         - id: news_sharing
           uri: lb://NewsSharing
           predicates:
-            - Path=/news/**
+            - Path=/news/**,/newsImage/**,/newsMessage/**
+        # 赛事管理
+        - id: match_regulation
+          uri: lb://MatchRegulation
+          predicates:
+            - Path=/match/**,/match/matchMessage/**,/signUp/**
 eureka:
   client:
     service-url:

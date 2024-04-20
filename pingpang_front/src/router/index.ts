@@ -18,6 +18,7 @@ import TutorialVue from "@/components/main/tutorial/TutorialVue.vue";
 import MatchVue from "@/components/main/match/MatchVue.vue";
 import NewsVue from "@/components/main/news/NewsVue.vue";
 import NewsMessageView from "@/components/main/news/NewsMessageView.vue";
+import MatchMessageView from "@/components/main/match/MatchMessageView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,6 +70,15 @@ const router = createRouter({
             MainContent: MatchView,
             AsideBar: NullVue,
           },
+        },
+        // 赛事的详情信息
+        {
+          path: "matchMessage",
+          name: "matchMessage",
+          components: {
+            MainContent: MatchMessageView,
+            AsideBar:NullVue
+          }
         },
         // 编写教程
         {
