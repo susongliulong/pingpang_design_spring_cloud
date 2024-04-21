@@ -17,6 +17,7 @@
       <module>CommentRegulation</module>
       <module>NewsSharing</module>
       <module>MatchRegulation</module>
+      <module>TutorialRegulation</module>
   </modules>
 
   <name>pingpang_backend</name>

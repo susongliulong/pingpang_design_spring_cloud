@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loong.mapper.TutorialMapper">
+
+    <resultMap id="tutorial" type="com.loong.entity.Tutorial">
+        <association property="basicInformation" column="tutorial_id" select="getBasicInformationById"/>
+    </resultMap>
+
+    <select id="getByTutorialId" parameterType="java.lang.Long" resultMap="tutorial">
+        select * from tutorial where tutorial_id=#{tutorialId}
+    </select>
+
+    <select id="getBasicInformationById" parameterType="java.lang.Long" resultType="com.loong.entity.BasicInformation">
+        select * from basic_information where id=#{id};
+    </select>
+</mapper>

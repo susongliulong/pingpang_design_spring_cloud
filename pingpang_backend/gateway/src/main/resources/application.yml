@@ -40,6 +40,10 @@ spring:
           uri: lb://MatchRegulation
           predicates:
             - Path=/match/**,/match/matchMessage/**,/signUp/**
+        - id: tutorial_regulation
+          uri: lb://TutorialRegulation
+          predicates:
+            - Path=/tutorial/**
 eureka:
   client:
     service-url:
