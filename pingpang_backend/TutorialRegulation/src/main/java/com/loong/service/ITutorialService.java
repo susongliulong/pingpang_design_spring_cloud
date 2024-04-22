@@ -3,6 +3,8 @@ package com.loong.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
+import com.loong.entity.menu.Menu;
+import com.loong.entity.user.User;
 import com.loong.entity.vo.TutorialVo;
 
 import java.util.List;
@@ -24,4 +26,8 @@ public interface ITutorialService extends IService<Tutorial> {
     void addTutorial(Tutorial tutorial);
 
     Tutorial getByTutorialId(long tutorialId);
+
+    List<Menu> getMenus();
+
+    User getAuthor(long userId);
 }

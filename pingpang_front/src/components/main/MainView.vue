@@ -255,7 +255,7 @@ function newsMessage(news:Article) {
     z-index: 1;
     top: 56px;
     width: 100%;
-    height: 800px;
+    /* height: 800px; */
 }
 
 #content {

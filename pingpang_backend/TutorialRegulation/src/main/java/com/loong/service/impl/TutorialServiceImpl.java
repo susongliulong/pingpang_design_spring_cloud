@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loong.entity.BasicInformation;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
+import com.loong.entity.menu.Menu;
+import com.loong.entity.user.User;
 import com.loong.entity.vo.TutorialVo;
 import com.loong.mapper.BasicInformationMapper;
 import com.loong.mapper.TutorialMapper;
@@ -65,15 +67,15 @@ public class TutorialServiceImpl extends ServiceImpl<TutorialMapper, Tutorial> i
     @Transactional
     public void addTutorial(Tutorial tutorial) {
 
-        BasicInformation target = tutorialMapper.getBasicInformationById(tutorial.getTutorialId());
         BasicInformation basicInformation = tutorial.getBasicInformation();
         basicInformation.setCategoryId(tutorial.getLevel());
         basicInformation.setPublishTime(LocalDateTime.now());
-        if (target == null) {
+        if(tutorial.getTutorialId()==null){
+            // 新插一条数据
             basicInformationMapper.insert(basicInformation);
-            // 跟新Tutorial表内容
-            tutorialMapper.insertTurorial(tutorial.getBasicInformation().getId(), tutorial.getLevel(), tutorial.getSuitableObject(), tutorial.getContent());
-        }else{
+            // 插入数据
+            tutorialMapper.insertTurorial(basicInformation.getId(), tutorial.getLevel(), tutorial.getSuitableObject(), tutorial.getContent());
+        } else{
             basicInformationMapper.updateById(basicInformation);
             tutorialMapper.updateTutorial(tutorial.getBasicInformation().getId(), tutorial.getLevel(), tutorial.getSuitableObject(), tutorial.getContent());
         }
@@ -82,5 +84,20 @@ public class TutorialServiceImpl extends ServiceImpl<TutorialMapper, Tutorial> i
     @Override
     public Tutorial getByTutorialId(long tutorialId) {
         return tutorialMapper.getByTutorialId(tutorialId);
+    }
+
+    @Override
+    public List<Menu> getMenus() {
+        // 查询表category中的数据
+
+        // 查询表basic_information中的数据
+
+        // 最后封装成Menu
+        return tutorialMapper.getMenus();
+    }
+
+    @Override
+    public User getAuthor(long userId) {
+        return tutorialMapper.getAuthor(userId);
     }
 }

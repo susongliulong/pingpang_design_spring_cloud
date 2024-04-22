@@ -3,6 +3,8 @@ package com.loong.controller;
 import com.loong.common.R;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
+import com.loong.entity.menu.Menu;
+import com.loong.entity.user.User;
 import com.loong.entity.vo.TutorialVo;
 import com.loong.service.IBasicInformationService;
 import com.loong.service.ITutorialService;
@@ -72,5 +74,17 @@ public class TutorialController {
         String path=tutorialPath+"/"+userId+"/";
         FileUpUtil.downFile(response, path, fileName);
         return R.success(null);
+    }
+
+    @GetMapping("/menus")
+    public R menus(){
+        List<Menu> list=tutorialService.getMenus();
+        return R.success(list);
+    }
+
+    @GetMapping("/user")
+    public R getAuthor(long userId){
+        User user=tutorialService.getAuthor(userId);
+        return R.success(user);
     }
 }

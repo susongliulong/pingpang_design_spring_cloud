@@ -261,6 +261,9 @@ const handleCurrentChange = (val: number) => {
   padding: 10px;
   border-bottom: 2px solid red;
 }
+.comment:last-child{
+  margin-bottom: 0px;
+}
 .content {
   margin-left: 20px;
 }

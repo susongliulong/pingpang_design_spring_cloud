@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.loong.entity.BasicInformation;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
+import com.loong.entity.menu.Menu;
+import com.loong.entity.user.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -40,4 +42,7 @@ public interface TutorialMapper extends BaseMapper<Tutorial> {
     @Update("update tutorial set level = #{level}, suitable_object = #{suitableObject}, content = #{content} where tutorial_id = #{id}")
     void updateTutorial(Long id, Long level, String suitableObject, String content);
 
+    List<Menu> getMenus();
+
+    User getAuthor(long userId);
 }

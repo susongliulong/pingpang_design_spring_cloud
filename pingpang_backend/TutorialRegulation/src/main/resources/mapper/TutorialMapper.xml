@@ -13,4 +13,23 @@
     <select id="getBasicInformationById" parameterType="java.lang.Long" resultType="com.loong.entity.BasicInformation">
         select * from basic_information where id=#{id};
     </select>
+
+<!--    查询所有的教程信息    -->
+
+    <resultMap id="menus" type="com.loong.entity.menu.Menu">
+        <collection property="menus" column="menu_id" select="getTutorialsByMenuId" />
+    </resultMap>
+    <select id="getTutorialsByMenuId" parameterType="java.lang.Long" resultType="com.loong.entity.menu.MenuItem">
+        select  id as `index`, title, concat('http://localhost:12345/tutorial/tutorial?tutorialId=',id) as href from basic_information where category_id=#{menu_id};
+    </select>
+
+    <select id="getMenus" resultMap="menus">
+        select id as `index` , id as menu_id,category as title from tutorial_category;
+    </select>
+
+<!--    根据userId查询user-->
+    <select id="getAuthor" parameterType="java.lang.Long" resultType="com.loong.entity.user.User">
+        select * from user where id=#{id};
+    </select>
+
 </mapper>
