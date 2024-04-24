@@ -44,6 +44,10 @@ spring:
           uri: lb://TutorialRegulation
           predicates:
             - Path=/tutorial/**
+        - id: comment_regulation
+          uri: lb://CommentRegulation
+          predicates:
+            - Path=/comment/**
 eureka:
   client:
     service-url:

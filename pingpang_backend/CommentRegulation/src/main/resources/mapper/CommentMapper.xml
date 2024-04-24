@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.loong.mapper.CommentMapper">
+
+    <!--    插入表article_comment-->
+    <insert id="insertArticleComment" parameterType="java.lang.Long">
+        insert into article_comment (article_id, comment_id)
+        values (#{articleId}, #{commentId});
+    </insert>
+
+    <!--    根据文章id查询评论数据  -->
+    <!--
+        现根据articleId在article_comment表中找到评论id，再根据评论id去comment表中查数据
+        其中属性user_id用来查询user表
+        属性comment_id （id）用来查询comment_sub_comment表，获得相应的子评论的id之后再去查找comment表
+    -->
+    <resultMap id="comments" type="com.loong.entity.CommentVo">
+        <association property="user" column="user_ID" select="getUserById"/>
+        <collection property="comments" column="comment_id" select="getSubCommentsById"/>
+    </resultMap>
+
+    <select id="getUserById" resultType="com.loong.entity.User" parameterType="java.lang.Long">
+        select *
+        from user
+        where id = #{user_ID};
+    </select>
+
+    <select id="getSubCommentsById" resultType="com.loong.entity.CommentVo">
+        select c.*
+        from comment c,
+             comment_sub_comment c_s_c
+        where c.id = c_s_c.sub_comment_id
+          and c_s_c.comment_id = #{id};
+    </select>
+
+    <select id="getComments" parameterType="java.lang.Long" resultMap="comments">
+        select *, c.id as comment_id, c.user_id as user_ID
+        from article_comment a,
+             comment c
+        where a.comment_id = c.id
+          and a.article_id = #{articleId}
+    </select>
+
+    <!--    分页查询-->
+    <select id="getCommentsByPage"  resultMap="comments">
+        select *, c.id as comment_id, c.user_id as user_ID
+        from article_comment a,
+             comment c
+        where a.comment_id = c.id
+        and a.article_id = #{articleId}
+    </select>
+
+    <select id="getsubCommentsNumber" resultType="java.lang.Integer">
+        select count(*) from comment_sub_comment where comment_id=#{id};
+    </select>
+
+    <select id="getCommentsByArticleId" parameterType="java.lang.Long">
+        select * from comment c,article_comment a
+        where c.id=a.comment_id
+        and a.article_id=#{articleId};
+    </select>
+
+    <select id="getSubCommentsByPage">
+        select * from comment c,comment_sub_comment c_s_c
+        where c.id=c_s_c.sub_comment_id
+        and c_s_c.comment_id=#{commentId}
+        limit #{pageStart},5
+    </select>
+
+    <select id="getCommentsByArticleIdAndCommentId">
+        select c.* from comment c, article_comment a ,comment_sub_comment c_s_c
+        where c.id=a.comment_id and c_s_c.comment_id=c.id
+        and c_s_c.comment_id=#{commentId}
+        and a.article_id=#{articleId}
+        limit #{pageStart},5
+    </select>
+
+    <!--    插入子评论-->
+    <insert id="insertSubComment">
+        insert into comment_sub_comment (comment_id, sub_comment_id)
+        values (#{mainCommentId}, #{subCommentId});
+    </insert>
+
+</mapper>

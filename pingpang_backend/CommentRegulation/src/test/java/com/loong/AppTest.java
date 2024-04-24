@@ -1,38 +1,24 @@
 package com.loong;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.loong.entity.CommentVo;
+import com.loong.service.ICommentService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
+import java.util.List;
+
+@SpringBootTest
+@RunWith(SpringRunner.class)
+public class AppTest
 {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+    @Autowired
+    private ICommentService commentService;
+    @Test
+    public void test(){
+        List<CommentVo> comments = commentService.getComments(1780961472154107906L);
+        comments.forEach(System.out::println);
     }
 }

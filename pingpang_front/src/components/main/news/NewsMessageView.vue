@@ -21,6 +21,10 @@
       :model-value="mainContent"
       style="margin-top: 40px; width: 75%"
     ></MdPreview>
+    <CommentVue
+      v-if="news.id != null"
+      :articleId="news.id"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -29,6 +33,8 @@ import { useRoute } from "vue-router";
 import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import axios from "axios";
+
+import CommentVue from "@/components/comment/CommentVue.vue";
 
 import { gatewayUrl } from "@/global";
 

@@ -2,34 +2,34 @@
   <div class="">
     <!-- 通过:label来实现默认初选 -->
 
-    <el-container >
-        <el-aside width="200px" style="max-height: calc(100vh)">
-          <el-radio-group v-model="isCollapse" style="margin-bottom: 10px">
-            <el-radio-button :value="false">详细面板</el-radio-button>
-            <el-radio-button :value="true">简要面板</el-radio-button>
-          </el-radio-group>
-          <el-menu
-            :default-active="activeMenuItem"
-            class="el-menu-vertical"
-            :collapse="isCollapse"
-          >
-            <el-sub-menu v-for="(menu, index) in menus" :index="menu.index">
-              <template #title>
-                <span>{{ menu.title }}</span>
-              </template>
-              <el-menu-item
-                v-for="(item, index2) in menu.menus"
-                :index="item.index"
-                @click="handleClick(item, index)"
-              >
-                <span>{{ item.title }}</span>
-              </el-menu-item>
-            </el-sub-menu>
-          </el-menu>
-        </el-aside>
+    <el-container>
+      <el-aside width="200px" style="max-height: calc(100vh)">
+        <el-radio-group v-model="isCollapse" style="margin-bottom: 10px">
+          <el-radio-button :value="false">详细面板</el-radio-button>
+          <el-radio-button :value="true">简要面板</el-radio-button>
+        </el-radio-group>
+        <el-menu
+          :default-active="activeMenuItem"
+          class="el-menu-vertical"
+          :collapse="isCollapse"
+        >
+          <el-sub-menu v-for="(menu, index) in menus" :index="menu.index">
+            <template #title>
+              <span>{{ menu.title }}</span>
+            </template>
+            <el-menu-item
+              v-for="(item, index2) in menu.menus"
+              :index="item.index"
+              @click="handleClick(item, index)"
+            >
+              <span>{{ item.title }}</span>
+            </el-menu-item>
+          </el-sub-menu>
+        </el-menu>
+      </el-aside>
 
       <el-scrollbar style="height: calc(100vh)">
-        <el-main >
+        <el-main>
           <div id="tutorial-desc" v-if="tutorial.tutorialId != null">
             <h1>{{ tutorial.basicInformation.title }}</h1>
             <span
@@ -54,7 +54,10 @@
           </div>
           <MdPreview :model-value="tutorial.content"></MdPreview>
           <!-- 放置评论界面 -->
-          <CommentVue></CommentVue>
+          <CommentVue 
+          @publish-comment="publishComment"  
+          v-if="tutorial.tutorialId!=null" 
+          :articleId="tutorial.tutorialId"/>
         </el-main>
       </el-scrollbar>
     </el-container>
@@ -64,7 +67,7 @@
 import { ref, onBeforeMount, nextTick, onMounted } from "vue";
 import CommentVue from "@/components/comment/CommentVue.vue";
 
-import { ElScrollbar } from "element-plus";
+import { ElMessage, ElScrollbar } from "element-plus";
 
 import { MdPreview, MdCatalog } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
@@ -107,12 +110,22 @@ interface Tutorial {
   content: string;
   basicInformation: Basicinformation; // 基础信息
 }
+interface User {
+  id: bigint;
+  name: string;
+  avatar: string;
+  points: number; // 用户的积分
+}
 
 const menus = ref<Menu[]>([]);
 
 const isCollapse = ref(false);
-
+const user = ref<User>();
 onBeforeMount(() => {
+  const userString = localStorage.getItem("user");
+  if (userString != null) {
+    user.value = JSON.parse(userString).user;
+  }
   initialMenus();
 });
 
@@ -144,6 +157,7 @@ const handleClick = (item: Menuitem, index: number) => {
       tutorial.value = resp.data.data;
       category.value = menus.value[index].title;
       getAuthor(tutorial.value.basicInformation.authorId);
+      
     });
 };
 
@@ -154,6 +168,36 @@ function getAuthor(userId: bigint) {
     tutorialUser.value = resp.data.data;
   });
 }
+// --------------------------------------发布评论相关--------------------------------------------------------
+interface User {
+  id: bigint;
+  name: string;
+  avatar: string;
+  points: number; // 用户的积分
+}
+
+interface Comment {
+  user: User; // 评论发布者
+  number: number; // 该评论下包含子评论的数量
+  isReplyWindowOpen: Boolean;
+  replyToId: bigint;
+  replyToName: string;
+  id: bigint;
+  content: string;
+  publishTime: string;
+  likes: number;
+  dislikes: number;
+  comments: Comment[]; // 嵌套评论
+}
+const comments = ref<Comment[]>([]); // 评论数据
+
+/**
+ * 在主窗口回复评论
+ * @param content
+ */
+const publishComment = (content: string) => {
+  
+};
 </script>
 <style scoped>
 .el-menu-vertical:not(.el-menu--collapse) {
