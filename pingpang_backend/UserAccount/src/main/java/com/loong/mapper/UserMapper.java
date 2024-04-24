@@ -1,7 +1,7 @@
 package com.loong.mapper;
 
-import com.loong.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.loong.entity.User;
 import org.apache.ibatis.annotations.Delete;
 
 import java.util.List;

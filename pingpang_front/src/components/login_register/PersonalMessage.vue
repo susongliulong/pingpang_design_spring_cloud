@@ -150,7 +150,7 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
   email: [
     {
-      required: true,
+      required: false,
       message: "输入正确的邮箱地址",
       trigger: "blur",
     },
@@ -182,7 +182,7 @@ const rules = reactive<FormRules<RuleForm>>({
 onBeforeMount(() => {
   const userString=localStorage.getItem("user");
   if (userString != null) {
-    const user = JSON.parse(userString);
+    const user = JSON.parse(userString).user;
     ruleForm.value = user;
     axios.get(gatewayUrl + '/user/interests/' + user.id).then(resp => {
       ruleForm.value.interests = resp.data.data;

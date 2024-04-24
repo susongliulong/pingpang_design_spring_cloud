@@ -1,17 +1,16 @@
 package com.loong.controller;
 
 
-
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,8 +21,11 @@ import java.util.Random;
 @RequestMapping("/code")
 public class CheckCodeController {
 
+    @Autowired
+    private HttpSession httpSession;
+
     @GetMapping("/get")
-    public void generateCode(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void generateCode(Integer number,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int width = 200;
         int height = 50;
 
@@ -38,11 +40,12 @@ public class CheckCodeController {
         g2d.fillRect(0, 0, width, height);
 
         // 生成随机字符
-        String captchaText = generateRandomString(5); // 生成包含5个字符的随机字符串
+        String captchaText = generateRandomString(4); // 生成包含5个字符的随机字符串
 
         // 将验证码文本存储在Session中，以便稍后验证
-        ServletContext servletContext = request.getSession().getServletContext();
-        servletContext.setAttribute("captcha", captchaText);
+        httpSession=request.getSession();
+
+        httpSession.setAttribute("captcha", captchaText);
 
         // 设置字体和字体大小
         g2d.setFont(new Font("SansSerif", Font.BOLD, 24));
@@ -63,7 +66,7 @@ public class CheckCodeController {
         OutputStream os = response.getOutputStream();
 
         // 将图像写入响应
-        ImageIO.write(bufferedImage, "png", os);
+        ImageIO.write(bufferedImage,"png", os);
 
         // 关闭输出流
         os.close();
@@ -72,8 +75,8 @@ public class CheckCodeController {
     @GetMapping("/check")
     public boolean checkCode(String checkCode, HttpServletRequest request){
 
-        String captcha = (String)request.getSession().getServletContext().getAttribute("captcha");
-        return checkCode.equals(captcha);
+        String captcha = (String) httpSession.getAttribute("captcha");
+        return checkCode.equalsIgnoreCase(captcha);
     }
 
 

@@ -1,6 +1,7 @@
 package com.loong.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.loong.common.R;
 import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
 
@@ -13,4 +14,7 @@ public interface UserService extends IService<User> {
     void updateInterestsMessage(long userId,List<Integer> interests);
 
     List<Integer> interests(long userId);
+
+    R login(String account, String password);
+
 }

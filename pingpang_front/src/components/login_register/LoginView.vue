@@ -27,12 +27,12 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue"
 import axios from "axios"
-import { gatewayUrl, userAccountUrl } from "@/global"
+import { gatewayUrl } from "@/global"
 import { useRouter } from "vue-router";
 
 
 // 模型数据
-const account = ref('19860205976');
+const account = ref('1734563');
 const password = ref('123456');
 const checkCode = ref('');
 const agree = ref(-1);
@@ -47,21 +47,13 @@ onBeforeMount(()=>{
 
 // 生成图片验证码
 const generateCode = () => {
-    
-    axios({
-        url:gatewayUrl+'/code/get',
-        method: 'get',
-        responseType:'blob',
-    }).then((resp) => {
-        const blob = new Blob([resp.data], { type: resp.data.type }); // 保存文件流为 Blob
-        const imageUrl = URL.createObjectURL(blob); // 转换 Blob 为 URL
-        checkCodeImg.value = imageUrl;
-    })
+    checkCodeImg.value=gatewayUrl+"/code/get?number="+Math.ceil(Math.random()*1000000/10)
 }
 
 // 登录验证
 const login = () => {
     if (agree.value <= 0) {
+        agree.value = 0;
         return;
     } else {
         axios({

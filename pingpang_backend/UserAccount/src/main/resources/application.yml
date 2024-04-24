@@ -29,7 +29,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: "1234"
-    url: jdbc:mysql://localhost:3306/pingpang?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3306/pingpang_user_db?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
 eureka:
   client:
     service-url:

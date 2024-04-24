@@ -44,6 +44,8 @@ public class User implements Serializable{
 
     private LocalDateTime lastLoginTime;
 
+    private LocalDateTime registerTime;
+
     private Integer playYears;
 
     @Override

@@ -158,13 +158,6 @@ const rules = reactive<FormRules<RuleForm>>({
       trigger: "blur",
     },
   ],
-  checkcode: [
-    {
-      required: true,
-      message: "验证码不能为空",
-      trigger: "blur",
-    },
-  ],
   playYears: [
     {
       required: true,
@@ -180,16 +173,7 @@ onBeforeMount(()=>{
 
 // 生成图片验证码
 const generateCode = () => {
-    
-    axios({
-        url:gatewayUrl+'/code/get',
-        method: 'get',
-        responseType:'blob',
-    }).then((resp) => {
-        const blob = new Blob([resp.data], { type: resp.data.type }); // 保存文件流为 Blob
-        const imageUrl = URL.createObjectURL(blob); // 转换 Blob 为 URL
-        checkCodeImg.value = imageUrl;
-    })
+  checkCodeImg.value = gatewayUrl + "/code/get?number=" + Math.ceil(Math.random() * 10000000);
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {

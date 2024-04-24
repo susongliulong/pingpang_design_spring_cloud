@@ -16,6 +16,7 @@ public class AppTest
 {
     @Autowired
     private ICommentService commentService;
+
     @Test
     public void test(){
         List<CommentVo> comments = commentService.getComments(1780961472154107906L);
