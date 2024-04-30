@@ -31,7 +31,7 @@
           <el-input v-model="ruleForm.name" />
         </el-form-item>
         <el-form-item label="手机号" prop="telephone">
-          <el-input v-model="ruleForm.telephone" />
+          <el-input v-model="ruleForm.telephone" @blur="generateCode"/>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="ruleForm.email" />
@@ -119,20 +119,20 @@ const router = useRouter();
 
 const interest_options = [
   {
-    value: 1,
-    label: "乒乓球资讯",
+    value: 28,
+    label: "赛事快讯",
   },
   {
-    value: 2,
-    label: "乒乓球入门",
+    value: 29,
+    label: "娱乐八卦",
   },
   {
-    value: 3,
-    label: "乒乓球交流",
+    value: 30,
+    label: "明星秀",
   },
   {
-    value: 4,
-    label: "提高球技",
+    value: 31,
+    label: "乒器快讯",
   },
 ];
 
@@ -173,7 +173,7 @@ onBeforeMount(()=>{
 
 // 生成图片验证码
 const generateCode = () => {
-  checkCodeImg.value = gatewayUrl + "/code/get?number=" + Math.ceil(Math.random() * 10000000);
+  checkCodeImg.value = gatewayUrl + "/code/get?number=" + Math.ceil(Math.random() * 10000000)+"&account="+ruleForm.value.telephone;
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {

@@ -2,6 +2,8 @@ package com.loong.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.loong.common.annotations.Desensitization;
+import com.loong.common.enums.DesensitizationTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,8 +32,10 @@ public class User implements Serializable{
 
     private String name;
 
+    @Desensitization(type = DesensitizationTypeEnum.MOBILE_PHONE)
     private String telephone;
 
+    @Desensitization(type = DesensitizationTypeEnum.EMAIL)
     private String email;
 
     private String description;

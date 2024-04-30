@@ -15,6 +15,6 @@ public interface UserService extends IService<User> {
 
     List<Integer> interests(long userId);
 
-    R login(String account, String password);
+    R login(String account, String password,String checkCode);
 
 }

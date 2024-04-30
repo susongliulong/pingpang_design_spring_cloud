@@ -123,20 +123,20 @@ const ruleForm = ref<RuleForm>({
 
 const interest_options = [
   {
-    value: 1,
-    label: "乒乓球资讯",
+    value: 28,
+    label: "赛事快讯",
   },
   {
-    value: 2,
-    label: "乒乓球入门",
+    value: 29,
+    label: "娱乐八卦",
   },
   {
-    value: 3,
-    label: "乒乓球交流",
+    value: 30,
+    label: "明星秀",
   },
   {
-    value: 4,
-    label: "提高球技",
+    value: 31,
+    label: "乒器快讯",
   },
 ];
 
@@ -184,6 +184,7 @@ onBeforeMount(() => {
   if (userString != null) {
     const user = JSON.parse(userString).user;
     ruleForm.value = user;
+    ruleForm.value.password = "";
     axios.get(gatewayUrl + '/user/interests/' + user.id).then(resp => {
       ruleForm.value.interests = resp.data.data;
     })

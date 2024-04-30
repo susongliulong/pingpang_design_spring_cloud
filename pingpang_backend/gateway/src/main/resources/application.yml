@@ -21,11 +21,6 @@ spring:
               - PUT
             maxAge: 30
       routes:
-        - id: user_module
-          uri: lb://User
-          predicates:
-            - Path=/user/login
-
         - id: user_account
           uri: lb://UserAccount
           predicates:

@@ -6,10 +6,11 @@ import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
 import com.loong.feigns.UserFeign;
 import com.loong.service.UserService;
-import com.loong.util.RedisUtil;
+import com.loong.service.checkcode.impl.CheckCodeServiceImpl;
+import com.loong.util.EncryptUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,35 +32,22 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private RedisUtil redisUtil;
-
-    @Autowired
-    private HttpSession httpSession;
-
-    @Autowired
     private UserFeign userFeign;
 
-    @GetMapping("/test")
-    public String test() {
-        String path = "http://localhost:12345/avatar/download?filename=";
+    @Autowired
+    private CheckCodeServiceImpl checkCodeService;
 
-        // 查询id，根据id匹配对应的图像
-        List<User> users = userService.list();
-        users.forEach(user -> {
-            user.setAvatar(path + "test" + user.getId() % 6 + ".jpg");
-            user.setDescription("这个人很懒什么都没有留下！");
-            userService.updateById(user);
-        });
-        return "test";
-    }
-
+    /**
+     * 用户登录逻辑
+     * @param account
+     * @param password
+     * @param checkCode
+     * @return
+     */
     @GetMapping("/login")
-    public R login(String account, String password, HttpServletRequest request) {
-
-        // 在用户未登录成功时，使用用户登录的账号作为存入redis中的键
-        return userService.login(account, password);
+    public R login(String account, String password, String checkCode) {
+        return userService.login(account, password,checkCode);
     }
-
 
     @PostMapping("/register")
     public R regster(@RequestBody UserDto userDto, HttpServletRequest request) {
@@ -81,7 +69,8 @@ public class UserController {
             } else {
                 // 检查验证码
                 // 采用服务调用的方式
-                boolean result=userFeign.checkCode(userDto.getCheckCode());
+                boolean result;
+                result=checkCodeService.checkCode(userDto.getCheckCode(),userDto.getTelephone());
                 if (!result) {
                     return R.warn("验证码错误");
                 } else {
@@ -93,8 +82,13 @@ public class UserController {
     }
 
     @PostMapping("/update")
+    @Transactional
     public R update(@RequestBody UserDto userDto) {
-
+        // 在更新用户信息的时候，不更新账号信息同时对密码完成加密
+        userDto.setTelephone(userService.getById(userDto.getId()).getTelephone());
+        userDto.setEmail(userService.getById(userDto.getId()).getEmail());
+        String password =EncryptUtil.bcrypt(userDto.getPassword());
+        userDto.setPassword(password);
         userService.saveOrUpdate(userDto);
         userService.updateInterestsMessage(userDto.getId(), userDto.getInterests());
         return R.success("账号信息修改成功");
@@ -102,13 +96,11 @@ public class UserController {
 
     /**
      * 根据用户Id查询感兴趣的话题
-     *
      * @param UserId
      * @return
      */
     @GetMapping("/interests/{UserId}")
     public R interests(@PathVariable long UserId) {
-
         List<Integer> interests = userService.interests(UserId);
         return R.success(interests);
     }

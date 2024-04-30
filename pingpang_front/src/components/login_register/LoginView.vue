@@ -1,7 +1,7 @@
 <template>
     <div class="content center">
         <h1>爱乒乓</h1>
-        <el-input v-model="account" style="margin-bottom: 20px;" placeholder="请输入邮箱或者手机号" @change=""></el-input>
+        <el-input v-model="account" style="margin-bottom: 20px;" placeholder="请输入邮箱或者手机号" @change="" @blur="generateCode"></el-input>
         <el-input v-model="password" style="margin-bottom: 20px;" type="password" placeholder="请输入账号密码" clearable
             @change=""></el-input>
 
@@ -29,6 +29,7 @@ import { ref, onBeforeMount } from "vue"
 import axios from "axios"
 import { gatewayUrl } from "@/global"
 import { useRouter } from "vue-router";
+import JSCrypt from 'jsencrypt';
 
 
 // 模型数据
@@ -37,6 +38,7 @@ const password = ref('123456');
 const checkCode = ref('');
 const agree = ref(-1);
 const checkCodeImg = ref('');
+
 
 // 路由数据
 const router=useRouter();
@@ -47,7 +49,7 @@ onBeforeMount(()=>{
 
 // 生成图片验证码
 const generateCode = () => {
-    checkCodeImg.value=gatewayUrl+"/code/get?number="+Math.ceil(Math.random()*1000000/10)
+    checkCodeImg.value = gatewayUrl + "/code/get?number=" + Math.ceil(Math.random() * 1000000 / 10) + "&account=" + account.value;
 }
 
 // 登录验证
@@ -56,14 +58,17 @@ const login = () => {
         agree.value = 0;
         return;
     } else {
+        const encrypt = new JSCrypt();
+        encrypt.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNNFmwudkEwWXM63ClWIvxcyPxU6cX2PP54Gho2zVxN2XRDr88jUybbHn3HgwELF7E1e/5YDbz+b2E1I0+R7qlXw8WVvQpcPGeCGvb6N9HrP95bjJQ/RvtsEEsqhBATxKvkV5lXOKvRApPyh05IpwHXqhfsn/1LvG7Rthx6qHgVwIDAQAB");
+        const encryptedPassword= encrypt.encrypt(password.value);
         axios({
         url:gatewayUrl+'/user/login',
         method: 'get',
         params: {
             account: account.value,
-            password: password.value,
+            password: encryptedPassword,
             checkCode: checkCode.value,
-            agree:agree.value == true?1:0
+            agree: agree.value == true?1:0
         }
     }).then(resp => {
         alert(resp.data.message);

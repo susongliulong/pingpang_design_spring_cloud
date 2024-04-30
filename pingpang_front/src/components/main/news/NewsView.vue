@@ -54,7 +54,7 @@
 </template>
 <script setup lang="ts">
 import axios from "axios";
-import { ref, watch} from "vue";
+import { onBeforeMount, ref, watch} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { gatewayUrl } from "@/global";
 import { ElScrollbar } from "element-plus";
@@ -77,7 +77,9 @@ const router = useRouter();
 const route = useRoute();
 const interests = JSON.parse(localStorage.getItem("user")).interests;
 
-initialArticles(interests);
+onBeforeMount(() => {
+  initialArticles(interests);
+})
 
 // 监听路由参数变化
 watch(()=> route.query.keyword, (newKeyWord) => {
