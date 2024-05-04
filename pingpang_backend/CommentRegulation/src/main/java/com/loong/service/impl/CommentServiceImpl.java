@@ -1,5 +1,6 @@
 package com.loong.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.loong.entity.Comment;
 import com.loong.entity.CommentVo;
@@ -27,6 +28,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     @Autowired
     private CommentMapper commentMapper;
+
 
     @Override
     @Transactional
@@ -137,5 +139,22 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     public void updateLikesOfComment(Long id, Integer likes, Integer dislikes) {
         commentMapper.updateLikesOfComment(id,likes,dislikes);
+    }
+
+    @Override
+    public void deleteAllDataByUserId(Long id) {
+
+        LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Comment::getUserId,id);
+
+
+        // 更新article_comment,comment,comment_sub_comment表中的数据
+        commentMapper.selectList(wrapper).forEach(
+                comment -> {
+                    commentMapper.deleteArticleComment(comment.getId());
+                    commentMapper.deleteSubComment(comment.getId());
+                    commentMapper.deleteById(comment);
+                }
+        );
     }
 }

@@ -37,10 +37,10 @@
           <el-input v-model="ruleForm.email" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="ruleForm.password" type="password" />
+          <el-input v-model="ruleForm.password" type="password" show-password/>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirm">
-          <el-input v-model="ruleForm.confirm" type="password" />
+          <el-input v-model="ruleForm.confirm" type="password" show-password/>
         </el-form-item>
         <el-form-item label="球龄" prop="playYears">
           <el-radio-group v-model="ruleForm.playYears">
@@ -188,7 +188,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           data: ruleForm.value,
         }).then((resp) => {
           if (resp.data.code == 200) {
-            alert("账号注册成功");
+            alert("账号注册成功,自动跳转到登录界面");
             router.push("/login"); // 跳转到登录界面
           } else {
             alert(resp.data.message);

@@ -28,7 +28,7 @@
     </select>
 
 <!--    根据userId查询user-->
-    <select id="getAuthor" parameterType="java.lang.Long" resultType="com.loong.entity.user.User">
+    <select id="getAuthor" parameterType="java.lang.Long" resultType="com.loong.entity.User">
         select * from user where id=#{id};
     </select>
 

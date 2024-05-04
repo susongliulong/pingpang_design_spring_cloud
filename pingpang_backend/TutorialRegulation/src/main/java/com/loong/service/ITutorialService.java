@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
 import com.loong.entity.menu.Menu;
-import com.loong.entity.user.User;
+import com.loong.entity.User;
 import com.loong.entity.vo.TutorialVo;
 
 import java.util.List;

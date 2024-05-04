@@ -28,4 +28,6 @@ public interface ICommentService extends IService<Comment> {
     List<CommentVo> getComments(Long articleId, Integer pageNumber, Long commentId);
 
     void updateLikesOfComment(Long id, Integer likes, Integer dislikes);
+
+    void deleteAllDataByUserId(Long id);
 }

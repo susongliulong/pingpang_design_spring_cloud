@@ -4,7 +4,7 @@ import com.loong.common.R;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
 import com.loong.entity.menu.Menu;
-import com.loong.entity.user.User;
+import com.loong.entity.User;
 import com.loong.entity.vo.TutorialVo;
 import com.loong.service.IBasicInformationService;
 import com.loong.service.ITutorialService;

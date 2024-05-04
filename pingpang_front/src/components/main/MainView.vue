@@ -18,7 +18,10 @@
             </div>
 
             <div class="right">
-                <span id="img" @click="router.push('/main/register')"><i><img :src="userMessage.avatar" style="width: 40px; height: 40px;"></i></span>
+                <span id="img" ><i>
+                    <span v-if="userMessage.avatar==null" @click="router.push('/login')" style="margin-top: 10px;color:cadetblue">登录账号</span>
+                    <img v-else @click="router.push('/main/register')" :src="userMessage.avatar" style="width: 40px; height: 40px;">
+                </i></span>
                 <span @click="router.push('/main')"><i class="el-icon-edit" style="font-size: 24px;"></i><a href="javaScript:void(0);">进行创作</a></span>
                 <span><i class="el-icon-message" style="font-size: 24px;"></i><a href="">消息</a></span>
             </div>

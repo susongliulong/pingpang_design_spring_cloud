@@ -7,6 +7,10 @@ import com.loong.common.state.RofAccount;
 import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
 import com.loong.entity.vo.UserVo;
+import com.loong.feign.CommentFeign;
+import com.loong.feign.MatchClient;
+import com.loong.feign.NewsSharingClient;
+import com.loong.feign.TutorialFeign;
 import com.loong.mapper.UserMapper;
 import com.loong.service.UserService;
 import com.loong.service.checkcode.impl.CheckCodeServiceImpl;
@@ -14,11 +18,13 @@ import com.loong.util.EncryptUtil;
 import com.loong.util.RSAUtil;
 import com.loong.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <p>
@@ -41,17 +47,46 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private CheckCodeServiceImpl checkCodeService;
 
+    @Value("${avatar.path}")
+    private  String avatarPath;
+
+    @Value("${avatar.defaultImgNumber}")
+    private Integer defaultAvatarNumber;
+
+    private final Random random=new Random();
+
+    @Autowired
+    private CommentFeign commentFeign;
+
+
+    @Autowired
+    private NewsSharingClient newsSharingClient;
+
+    @Autowired
+    private MatchClient matchClient;
+
+    @Autowired
+    private TutorialFeign tutorialFeign;
+
     @Override
     public void register(UserDto userDto) {
         // 更新用户数据
-        // 在用户注册的时候对用户密码西信息进行加密，存储到后端
+        // 在用户注册的时候对用户密码信息进行加密，存储到后端
+        // 生成用户默认图像，在后台文件中选取
+
         userDto.setPassword(EncryptUtil.bcrypt(userDto.getPassword()));
-
+        userDto.setRegisterTime(LocalDateTime.now());
+        userDto.setAvatar(avatarPath+"test"+random.nextInt(defaultAvatarNumber)+".jpg");
         userMapper.insert(userDto);
-
         userDto.getInterests().forEach(interest -> {
             userMapper.insertInterest(userDto.getId(), interest);
         });
+
+        // 同步更新其他数据,后续可以使用多线程技术进行优化，进行后台更新
+        commentFeign.addUser(userDto);
+        newsSharingClient.addUser(userDto);
+        matchClient.addUser(userDto);
+        tutorialFeign.addUser(userDto);
     }
 
     @Override
@@ -132,6 +167,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
         }
         return R.warn("用户登录失败");
+    }
+
+    @Override
+    public R logout(Long id) {
+        userMapper.deleteById(id);
+        commentFeign.deleteUser(id);
+        newsSharingClient.deleteUser(id);
+        matchClient.deleteUser(id);
+        tutorialFeign.deleteUser(id);
+
+        return R.success("账号注销成功");
+    }
+
+    @Override
+    public R updateUser(UserDto userDto) {
+        userDto.setTelephone(userMapper.selectById(userDto.getId()).getTelephone());
+        userDto.setEmail(userMapper.selectById(userDto.getId()).getEmail());
+        String password =EncryptUtil.bcrypt(userDto.getPassword());
+        userDto.setPassword(password);
+        userMapper.updateById(userDto);
+        updateInterestsMessage(userDto.getId(), userDto.getInterests());
+
+        // 同步更新其他的数据库
+        commentFeign.updateUser(userDto);
+        newsSharingClient.updateUser(userDto);
+        matchClient.updateUser(userDto);
+        tutorialFeign.updateUser(userDto);
+
+        return R.success("账号信息修改成功");
     }
 
 }

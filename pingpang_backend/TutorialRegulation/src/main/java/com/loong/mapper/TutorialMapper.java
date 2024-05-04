@@ -5,7 +5,7 @@ import com.loong.entity.BasicInformation;
 import com.loong.entity.Category;
 import com.loong.entity.Tutorial;
 import com.loong.entity.menu.Menu;
-import com.loong.entity.user.User;
+import com.loong.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.loong.common.R;
 import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
-import com.loong.feigns.UserFeign;
 import com.loong.service.UserService;
 import com.loong.service.checkcode.impl.CheckCodeServiceImpl;
 import com.loong.util.EncryptUtil;
@@ -32,9 +31,6 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserFeign userFeign;
-
-    @Autowired
     private CheckCodeServiceImpl checkCodeService;
 
     /**
@@ -47,6 +43,11 @@ public class UserController {
     @GetMapping("/login")
     public R login(String account, String password, String checkCode) {
         return userService.login(account, password,checkCode);
+    }
+
+    @DeleteMapping("/logout")
+    public R logout(Long id){
+        return userService.logout(id);
     }
 
     @PostMapping("/register")
@@ -85,13 +86,8 @@ public class UserController {
     @Transactional
     public R update(@RequestBody UserDto userDto) {
         // 在更新用户信息的时候，不更新账号信息同时对密码完成加密
-        userDto.setTelephone(userService.getById(userDto.getId()).getTelephone());
-        userDto.setEmail(userService.getById(userDto.getId()).getEmail());
-        String password =EncryptUtil.bcrypt(userDto.getPassword());
-        userDto.setPassword(password);
-        userService.saveOrUpdate(userDto);
-        userService.updateInterestsMessage(userDto.getId(), userDto.getInterests());
-        return R.success("账号信息修改成功");
+
+        return userService.updateUser(userDto);
     }
 
     /**

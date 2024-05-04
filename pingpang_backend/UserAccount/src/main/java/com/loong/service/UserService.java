@@ -17,4 +17,7 @@ public interface UserService extends IService<User> {
 
     R login(String account, String password,String checkCode);
 
+    R logout(Long id);
+
+    R updateUser(UserDto userDto);
 }

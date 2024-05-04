@@ -1,6 +1,5 @@
 package com.loong;
 
-import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
 import com.loong.mapper.UserMapper;
 import com.loong.service.UserService;
@@ -10,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -40,19 +37,18 @@ public class MapperTest {
         System.out.println(userMapper.selectInterests(1));
     }
 
-    // 账号默认的头像数据
     @Test
-    public void test3(){}{
+    public void test2(){
+        userMapper.selectList(null).forEach(System.out::println);
+    }
 
-        String path="http://localhost:12345/avatar/download?filename=";
 
-        // 查询id，根据id匹配对应的图像
-        List<User> users = userMapper.selectList(null);
-        users.forEach(user -> {
-            user.setAvatar(path+"test"+user.getId()%6+".jpg");
-            user.setDescription("这个人很懒什么都没有留下！");
-            userMapper.updateById(user);
-        });
+    @Test
+    public void test6(){
+        StackTraceElement[] stackTraces = new RuntimeException().getStackTrace();
+        for (StackTraceElement stackTrace : stackTraces) {
+            System.out.println(stackTrace.getClass());
+        }
     }
 
 }

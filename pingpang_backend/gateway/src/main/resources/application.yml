@@ -1,5 +1,6 @@
 server:
   port: 12345
+  max-http-request-header-size: 2000000
 spring:
   application:
     name: gateway
@@ -24,7 +25,7 @@ spring:
         - id: user_account
           uri: lb://UserAccount
           predicates:
-            - Path=/code/**,/avatar/**,/user/**,/user/interests/**
+            - Path=/code/**,/avatar/**,/user/**,/user/interests/**,/user/view/**
 
         - id: news_sharing
           uri: lb://NewsSharing

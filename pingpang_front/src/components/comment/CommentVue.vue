@@ -3,7 +3,7 @@
   <el-row>
     <el-col :span="2">
       <!-- 展示登录之后的照片 -->
-      <img src="" alt="照片" style="width: 60px; height: 60px" />
+      <img :src="user.avatar" alt="照片" style="width: 60px; height: 60px" />
     </el-col>
     <el-col :offset="1" :span="10">
       <el-input
@@ -144,7 +144,7 @@
     <div v-if="showReplyWindow && comment.isReplyWindowOpen" id="writeComment">
       <el-row>
         <el-col :span="2">
-          <img src="" alt="照片" style="width: 60px; height: 60px" />
+          <img :src="user.avatar" alt="照片" style="width: 60px; height: 60px" />
         </el-col>
         <el-col :offset="1" :span="10">
           <el-input

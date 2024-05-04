@@ -30,6 +30,8 @@ spring:
     username: root
     password: "1234"
     url: jdbc:mysql://localhost:3306/pingpang_user_db?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+  thymeleaf:
+    prefix: classpath:/templates/
 eureka:
   client:
     service-url:
@@ -38,6 +40,7 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml
 mp:
   outputDir: D:\10.软件工程课程\软件工程大四上\毕业论文\pingpang_backend\UserAccount\src\main\java
-
 avatar:
   location: D:\imgs\avatar\
+  path: http://localhost:12345/avatar/download?filename=
+  defaultImgNumber: 6

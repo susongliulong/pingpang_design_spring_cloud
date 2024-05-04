@@ -33,4 +33,6 @@ public interface IMatchService extends IService<Match> {
     boolean markMatchesOfSignUp(long userId,long matchId);
 
     void postMatch(MatchDTO matchDTO);
+
+    void deleteAllData(Long id);
 }

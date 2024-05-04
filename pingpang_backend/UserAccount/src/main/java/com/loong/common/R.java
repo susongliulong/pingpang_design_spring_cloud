@@ -55,6 +55,10 @@ public class R {
     public static R success(Object data){
         return new R(RHttpState.SUCCESS.getCode(),data,null);
     }
+
+    public static R success(String  message){
+        return new R(RHttpState.SUCCESS.getCode(),null,message);
+    }
     
     public static R warn(Object data,String message){
         return new R(RHttpState.WARNING.getCode(),data,message);

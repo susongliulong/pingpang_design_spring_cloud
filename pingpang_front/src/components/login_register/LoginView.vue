@@ -2,19 +2,19 @@
     <div class="content center">
         <h1>爱乒乓</h1>
         <el-input v-model="account" style="margin-bottom: 20px;" placeholder="请输入邮箱或者手机号" @change="" @blur="generateCode"></el-input>
-        <el-input v-model="password" style="margin-bottom: 20px;" type="password" placeholder="请输入账号密码" clearable
+        <el-input v-model="password" style="margin-bottom: 20px;" type="password" placeholder="请输入账号密码"  show-password clearable
             @change=""></el-input>
 
         <el-row style="margin-bottom: 20px;">
             <el-col :span="12">
-                <el-input v-model="checkCode" style="width: 200px;" placeholder="请输入验证码" @change="" />
+                <el-input v-model="checkCode" style="width: 200px;" placeholder="请输入验证码" @change="" clearable/>
             </el-col>
             <el-col :offset="7" :span="4">
                 <img :src="checkCodeImg" alt="" style="width: 90px;height:40px;" @click="generateCode">
             </el-col>
         </el-row>
         <input type="checkbox" style="width: 25px;" v-model="agree">
-        我已经阅读并且同意<a href="otherUrl">爱乒乓协议</a>
+        我已经阅读并且同意<a :href="gatewayUrl+'/user/view/privacy'">爱乒乓协议</a>
         </input>
         <br>
         <span v-if="agree==0" style="color: red; font-size: 12px;">请先勾选同意协议</span>
@@ -29,6 +29,7 @@ import { ref, onBeforeMount } from "vue"
 import axios from "axios"
 import { gatewayUrl } from "@/global"
 import { useRouter } from "vue-router";
+import { ElMessage,ElMessageBox } from "element-plus";
 import JSCrypt from 'jsencrypt';
 
 
@@ -71,11 +72,21 @@ const login = () => {
             agree: agree.value == true?1:0
         }
     }).then(resp => {
-        alert(resp.data.message);
+
+        // 根据登录结果进行跳转
         if (resp.data.code == 200) {
+            ElMessage({
+                type: 'success',
+                message:resp.data.message
+            });
             const user = resp.data.data;
             localStorage.setItem("user", JSON.stringify(user));
             router.push("/main")
+        } else {
+            ElMessage({
+                type: 'warning',
+                message:resp.data.message
+            })
         }
     })
     }

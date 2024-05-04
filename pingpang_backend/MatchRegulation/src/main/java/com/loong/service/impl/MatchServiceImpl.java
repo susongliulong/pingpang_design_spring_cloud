@@ -147,5 +147,10 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
         matchMapper.addMatchMessage(matchId,matchDTO.getContent());
     }
 
+    @Override
+    public void deleteAllData(Long id) {
+
+    }
+
 
 }

@@ -176,4 +176,20 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         news.setContent(content);
         newsMapper.insert(news);
     }
+
+    /**
+     * 用户注销账号之后删除所有的数据
+     * @param id
+     */
+    @Override
+    public void deleteAllData(Long id) {
+
+        basicInformationMapper.selectList(new LambdaQueryWrapper<BasicInformation>().eq(BasicInformation::getAuthorId, id))
+                .forEach(
+                        news->{
+                            newsMapper.deleteById(news.getId());
+                            basicInformationMapper.deleteById(news);
+                        }
+                );
+    }
 }

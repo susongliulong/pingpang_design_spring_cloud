@@ -33,4 +33,6 @@ public interface INewsService extends IService<News> {
     List<LinkItem> getKeyWords(String keyWord);
 
     void saveNews(NewsDTO newsDTO);
+
+    void deleteAllData(Long id);
 }

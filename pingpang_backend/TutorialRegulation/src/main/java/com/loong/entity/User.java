@@ -1,4 +1,4 @@
-package com.loong.entity.user;
+package com.loong.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

@@ -4,6 +4,7 @@ import com.loong.entity.Comment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.loong.entity.CommentVo;
 import com.loong.entity.User;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -40,4 +41,10 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     @Update("update comment set likes = #{likes} ,dislikes=#{dislikes} where id = #{id}")
     void updateLikesOfComment(Long id, Integer likes, Integer dislikes);
+
+    @Delete("delete from article_comment where comment_id=#{id}")
+    void deleteArticleComment(Long id);
+
+    @Delete("delete from comment_sub_comment where comment_sub_comment.comment_id=#{id}")
+    void deleteSubComment(Long id);
 }

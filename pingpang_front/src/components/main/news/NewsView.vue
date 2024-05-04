@@ -75,9 +75,16 @@ interface Article {
 const articles = ref<Article[]>([]);
 const router = useRouter();
 const route = useRoute();
-const interests = JSON.parse(localStorage.getItem("user")).interests;
+let interests;
 
 onBeforeMount(() => {
+  const userString=localStorage.getItem("user");
+  if (userString == null) {
+    interests = null;
+  } else {
+    const user = JSON.parse(userString);
+    interests = user.interests;
+  }
   initialArticles(interests);
 })
 
