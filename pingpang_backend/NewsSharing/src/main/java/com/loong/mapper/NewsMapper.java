@@ -16,4 +16,11 @@ public interface NewsMapper extends BaseMapper<News> {
 
     @Select("select name from user where id = #{authorId}")
     String getNewsAuthor(long authorId);
+
+    @Select("select name from pingpang_news_db.interest where id = #{categoryId}")
+    String getCategoryNameById(Long categoryId);
+
+    @Select("select basic_information.*,news.content from news ,basic_information where news.news_id=#{newsId} and news.news_id=basic_information.id")
+    Object getNews(long newsId, long userId);
+
 }

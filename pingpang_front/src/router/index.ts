@@ -18,7 +18,9 @@ import TutorialVue from "@/components/main/tutorial/TutorialVue.vue";
 import MatchVue from "@/components/main/match/MatchVue.vue";
 import NewsVue from "@/components/main/news/NewsVue.vue";
 import NewsMessageView from "@/components/main/news/NewsMessageView.vue";
+import ManageNewsView from "@/components/main/news/ManageNewsView.vue";
 import MatchMessageView from "@/components/main/match/MatchMessageView.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +33,7 @@ const router = createRouter({
       redirect: "/main/news", // 重定向到乒乓球资讯界面
       component: MainView,
       children: [
-       // 修改个人信息
+        // 修改个人信息
         {
           path: "register",
           name: "register",
@@ -52,8 +54,8 @@ const router = createRouter({
           path: "news_message",
           name: "news_message",
           components: {
-            MainContent: NewsMessageView
-          }
+            MainContent: NewsMessageView,
+          },
         },
         {
           path: "tutorial",
@@ -77,8 +79,8 @@ const router = createRouter({
           name: "matchMessage",
           components: {
             MainContent: MatchMessageView,
-            AsideBar:NullVue
-          }
+            AsideBar: NullVue,
+          },
         },
         // 编写教程
         {
@@ -105,6 +107,14 @@ const router = createRouter({
           components: {
             MainContent: NewsVue,
             // AsideBar: NullVue,
+          },
+        },
+        {
+          path: "manage_news",
+          name: "manage_news",
+          components: {
+            MainContent: ManageNewsView,
+            AsideBar: AsideBar,
           },
         },
       ],

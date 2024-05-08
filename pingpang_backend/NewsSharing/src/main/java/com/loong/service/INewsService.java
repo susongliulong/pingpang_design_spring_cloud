@@ -5,7 +5,9 @@ import com.loong.entity.LinkItem;
 import com.loong.entity.News;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.loong.entity.dto.NewsDTO;
+import com.loong.entity.vo.NewsVo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ import java.util.List;
  */
 public interface INewsService extends IService<News> {
 
+    String category(Long categoryId);
+
     List<BasicInformation> recommendArticles(Integer page);
 
     List<BasicInformation> recommendArticles(List<Integer> integers,Integer page);
@@ -28,11 +32,21 @@ public interface INewsService extends IService<News> {
 
     String getNewsAuthor(long authorId);
 
-    List<BasicInformation> getNewsByKeyWord(String keyWord);
+    List<BasicInformation> getNewsByKeyWord(LocalDateTime startTime, LocalDateTime endTime, Long category, String keyWord, String activeName, Integer page);
 
     List<LinkItem> getKeyWords(String keyWord);
 
-    void saveNews(NewsDTO newsDTO);
+    BasicInformation saveNews(NewsDTO newsDTO);
 
     void deleteAllData(Long id);
+
+    Object getNews(Long newsId, Long userId);
+
+    Boolean deleteNews(Long newsId);
+
+    void deleteNewsById(Long newsId);
+
+    Long [] tabs();
+
+    List<NewsVo> getNewsByPage(LocalDateTime startTime, LocalDateTime endTime, Long category, String searchContent, String activeName, Integer page);
 }

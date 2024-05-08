@@ -45,3 +45,8 @@ tutorial:
   img:
     path: D:\imgs\tutorials
 
+# 新闻在回收站保存时间（单位为秒）
+news:
+  expire:
+    time: 60
+

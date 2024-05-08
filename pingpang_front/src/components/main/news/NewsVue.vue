@@ -1,14 +1,18 @@
 <template>
   <div class="clear">
     <!-- 编辑发布新闻 -->
-    <div id="header">
+    <div id="header" class="clear">
       <!-- 教程所属分类 -->
       <el-select
         v-model="news.categoryId"
         placeholder="选择资讯分类"
         style="width: 150px"
       >
-        <el-option v-for="(item,index) in interests" :label="item.name" :value="item.id"/>
+        <el-option
+          v-for="(item, index) in interests"
+          :label="item.name"
+          :value="item.id"
+        />
       </el-select>
 
       <el-button
@@ -25,6 +29,14 @@
         style="margin-left: 20px"
         >存为草稿</el-button
       >
+
+      <el-button
+        type="primary"
+        size="default"
+        @click="manageNews"
+        style="margin-left: 20px;float: right;"
+        >资讯管理</el-button
+      >
     </div>
     <div id="leftBar" class="left">
       <!-- 新闻基础信息 -->
@@ -36,17 +48,13 @@
         size="small"
       >
         <el-form-item label="新闻标题" prop="title">
-          <el-input
-            v-model="news.title"
-            type="text"
-            autocomplete="off"
-          />
+          <el-input v-model="news.title" type="text" autocomplete="off" />
         </el-form-item>
 
         <el-form-item label="封面照片" prop="imageUrl">
           <el-upload
             class="avatar-uploader"
-            :action="gatewayUrl+'/newsImage/upload'"
+            :action="gatewayUrl + '/newsImage/upload'"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
@@ -60,20 +68,19 @@
           <el-button @click="resetForm(newsRef)" type="danger">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-divider/>
+      <el-divider />
       <div id="news">
         <h2>已发布资讯</h2>
         <el-card
-          style="margin-top:10px"
+          style="margin-top: 10px"
           :body-style="{ padding: '0px' }"
           v-for="(news, index) in newses"
           :index="index"
-          
-          >
+        >
           <span>{{ news.title }}</span>
           <div>
             <div style="font-size: 12px; color: #999">
-              {{ news.publishTime.toString().substring(0,10) }}
+              {{ news.publishTime.toString().substring(0, 10) }}
             </div>
             <span style="font-size: 12px; color: #999">点赞量：</span
             ><span>{{ news.likes }}&nbsp;&nbsp;</span>
@@ -86,8 +93,8 @@
       </div>
     </div>
 
-    <div id="markdown" class="left">
-      <MdEditor v-model="news.content"></MdEditor>
+    <div id="markdown" class="left" >
+      <MdEditor v-model="news.content" @onUploadImg="onUploadImg"></MdEditor>
     </div>
   </div>
 </template>
@@ -103,6 +110,8 @@ import { ElForm } from "element-plus";
 import { MdEditor } from "md-editor-v3";
 import axios from "axios";
 import gatewayUrl from "@/global";
+import router from "@/router";
+import { useRoute } from "vue-router";
 
 interface Basicinformation {
   id: bigint;
@@ -119,6 +128,7 @@ interface Basicinformation {
 }
 
 interface News{
+  id: bigint;
   title: string;
   imageUrl: string;
   categoryId: bigint;
@@ -130,6 +140,7 @@ const newsRef = ref<FormInstance>(); // 表单信息
 const news = ref<News>({});
 const newses = ref<Basicinformation[]>([]); // 个人已发布新闻资讯
 
+const route = useRoute();
 
 onBeforeMount(() => {
   getInterests();
@@ -140,13 +151,29 @@ onBeforeMount(() => {
     authorOfNews(userId);// 上传作者的id信息
     getNewsesByUserId(userId);
   }
+  const newsId:bigint = route.query.newsId;
+  if (newsId !== undefined) {
+    getNewsById(newsId);
+  }
 })
+
+function getNewsById(newsId:bigint) {
+  axios({
+    method: 'get',
+    url: gatewayUrl + '/newsMessage/newsMessage',
+    params: {
+      newsId:newsId 
+    }
+  }).then(resp => {
+    news.value = resp.data.data;
+  })
+}
 
 // 查看用户已经发布的信息
 function getNewsesByUserId(userId: bigint) {
   axios({
     method: 'get',
-    url: gatewayUrl + '/newsMessage/newsMessage',
+    url: gatewayUrl + '/newsMessage/newsMessages',
     params: {
       userId:userId
     }
@@ -163,6 +190,9 @@ const submit = () => {
     data: news.value
   }).then(resp => {
     if (resp.data.code == 200) {
+      const newsString = JSON.stringify(resp.data.data);
+      localStorage.setItem("news", newsString);
+      router.push("/main/news_message");
       ElMessage.success("资讯发布成功");
     } else {
       ElMessage.error("资讯发布失败");
@@ -182,7 +212,7 @@ function authorOfNews(userId:bigint) {
     method: 'post',
     url:gatewayUrl+'/newsImage/authorOfNews/'+userId
   }).then(resp => {
-    
+
   })
 }
 const handleAvatarSuccess: UploadProps["onSuccess"] = (
@@ -218,7 +248,41 @@ function getInterests() {
     }
   )
 }
+
+// markdown编辑器点击上传图片
+const onUploadImg = async (files, callback) => {
+  const res = await Promise.all(
+    files.map((file) => {
+      return new Promise((rev, rej) => {
+        const form = new FormData();
+        form.append('file', file);
+
+        axios
+          .post(gatewayUrl+"/newsImage/upload", form, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((res) => rev(res))
+          .catch((error) => rej(error));
+      });
+    })
+  );
+  // Approach 1
+  callback(res.map((item) => gatewayUrl + '/newsImage/download?fileName=' + item.data.data));
+}
+
+function manageNews() {
+  router.push({
+    path: '/main/manage_news',
+    query: {
+      userId: news.value.id
+    }
+  })
+}
+
 </script>
+
 <style scoped>
 /* 图像上传 */
 .avatar-uploader .avatar {

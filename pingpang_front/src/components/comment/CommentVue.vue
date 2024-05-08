@@ -1,5 +1,7 @@
 <template>
-  <h1 style="margin-top: 40px">评论界面：</h1>
+
+<div style="width: 600px">
+      <h1 style="margin-top: 40px">评论界面：</h1>
   <el-row>
     <el-col :span="2">
       <!-- 展示登录之后的照片 -->
@@ -163,6 +165,8 @@
       </el-row>
     </div>
   </div>
+</div>
+  
 </template>
 <script setup lang="ts">
 import gatewayUrl from "@/global";

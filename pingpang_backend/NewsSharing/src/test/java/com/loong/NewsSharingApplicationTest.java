@@ -6,6 +6,7 @@ import com.loong.entity.Interest;
 import com.loong.entity.News;
 import com.loong.entity.User;
 import com.loong.mapper.BasicInformationMapper;
+import com.loong.mapper.NewsMapper;
 import com.loong.mapper.UserMapper;
 import com.loong.service.IBasicInformationService;
 import com.loong.service.IInterestService;
@@ -44,6 +45,9 @@ public class NewsSharingApplicationTest {
 
     @Autowired
     private BasicInformationMapper basicInformationMapper;
+
+    @Autowired
+    private NewsMapper newsMapper;
 
 
     @Test
@@ -189,4 +193,8 @@ public class NewsSharingApplicationTest {
         System.out.println(basicInformationMapper.getKeyWords("马龙").size());
     }
 
+    @Test
+    public void test6(){
+        System.out.println(newsMapper.getNews(1780061628808314882L, 10L));
+    }
 }

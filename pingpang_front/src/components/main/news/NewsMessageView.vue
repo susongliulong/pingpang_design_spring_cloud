@@ -28,7 +28,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive,onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
 import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
@@ -38,13 +38,19 @@ import CommentVue from "@/components/comment/CommentVue.vue";
 
 import { gatewayUrl } from "@/global";
 
-const newsString = localStorage.getItem("news");
-const news = JSON.parse(newsString);
+onBeforeMount(() => {
+  const newsString = localStorage.getItem("news");
+  if (newsString == null) {
+    console.error("error");
+    return;
+  }
+  news.value = JSON.parse(newsString);
+  newsMessage(news.value);
+})
+const news = ref<any>();
 const mainContent = ref("");
 const author = ref("");
 const category = ref("");
-
-newsMessage(news);
 
 // 初始化资讯详细信息
 function newsMessage(news: any) {

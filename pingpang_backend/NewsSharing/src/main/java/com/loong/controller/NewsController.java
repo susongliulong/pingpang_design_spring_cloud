@@ -4,11 +4,13 @@ import com.loong.common.R;
 import com.loong.entity.BasicInformation;
 import com.loong.entity.LinkItem;
 import com.loong.entity.News;
+import com.loong.entity.vo.NewsVo;
 import com.loong.service.IInterestService;
 import com.loong.service.INewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class NewsController {
      */
     @GetMapping("/keyWord")
     public R getNewsByKeyWord(@RequestParam(value="keyword")String keyWord){
-        List<BasicInformation>articles=iNewsService.getNewsByKeyWord(keyWord);
+        List<BasicInformation>articles=null;
         return R.success(articles);
     }
 
@@ -98,4 +100,42 @@ public class NewsController {
     public R getInterests(){
         return R.success(iInterestService.list());
     }
+
+    @GetMapping("/category")
+    public R category(Long categoryId){
+        String categoryName=iNewsService.category(categoryId);
+        return R.success(categoryName);
+    }
+
+    @GetMapping("/manage_keyWord")
+    public R getNewsByKeyWord(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            Long category,
+            String searchContent,
+            String activeName,
+            Integer page
+    ){
+        // 根据activeName查询对应状态的文章
+        List<NewsVo>news=iNewsService.getNewsByPage(startTime,endTime,category,searchContent,activeName,page);
+        return R.success(news);
+    }
+
+    @DeleteMapping("/delete")
+    public R deleteNews(Long newsId){
+
+        // 在删除新闻的时候，将state字段的值置为5，放入回收站中
+
+        // 在回收站中最长的保存时间为30天，30天之后将彻底删除该文章
+        Boolean result=iNewsService.deleteNews(newsId);
+        return R.success(null,"删除成功");
+    }
+
+    @GetMapping("/tabs")
+    public R tabs(){
+        Long []tabs=iNewsService.tabs();
+        return R.success(tabs);
+    }
+
+
 }

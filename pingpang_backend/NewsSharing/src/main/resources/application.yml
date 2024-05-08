@@ -45,3 +45,9 @@ article:
   img:
     path: D:\imgs\articles
 
+
+# 资讯保存时间,单位为秒
+news:
+  expire:
+    time: 60
+

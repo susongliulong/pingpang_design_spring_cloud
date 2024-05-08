@@ -23,14 +23,20 @@ public class NewsMessageController {
 
     @PostMapping("/post")
     public R newsMessage(@RequestBody NewsDTO newsDTO){
-        iNewsService.saveNews(newsDTO);
-        return R.success("资讯发布成功");
+        // 现根据id查询
+        BasicInformation basicInformation = iNewsService.saveNews(newsDTO);
+        return R.success(basicInformation,"发布资讯成功");
     }
 
-    @GetMapping("/newsMessage")
+    @GetMapping("/newsMessages")
     public R newsMessage(long userId){
         LambdaQueryWrapper<BasicInformation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(BasicInformation::getAuthorId,userId);
         return R.success(iBasicInformationService.list(queryWrapper));
+    }
+
+    @GetMapping("/newsMessage")
+    public R newsMessage(Long newsId,@RequestParam(required = false) Long userId){
+        return R.success(iNewsService.getNews(newsId,userId));
     }
 }

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NewsDTO {
 
+    private Long id;
+
     private String title;
     private long authorId;
     private long categoryId;
