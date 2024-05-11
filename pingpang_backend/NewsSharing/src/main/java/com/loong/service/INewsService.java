@@ -49,4 +49,6 @@ public interface INewsService extends IService<News> {
     Long [] tabs();
 
     List<NewsVo> getNewsByPage(LocalDateTime startTime, LocalDateTime endTime, Long category, String searchContent, String activeName, Integer page);
+
+    BasicInformation saveDraft(NewsDTO newsDTO);
 }

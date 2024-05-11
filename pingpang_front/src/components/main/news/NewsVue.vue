@@ -25,7 +25,7 @@
       <el-button
         type="primary"
         size="default"
-        @click=""
+        @click="saveDraft"
         style="margin-left: 20px"
         >存为草稿</el-button
       >
@@ -34,7 +34,7 @@
         type="primary"
         size="default"
         @click="manageNews"
-        style="margin-left: 20px;float: right;"
+        style="margin-left: 20px; float: right"
         >资讯管理</el-button
       >
     </div>
@@ -49,6 +49,17 @@
       >
         <el-form-item label="新闻标题" prop="title">
           <el-input v-model="news.title" type="text" autocomplete="off" />
+        </el-form-item>
+
+        <el-form-item label="可见范围" prop="state">
+          <el-select
+            v-model="news.state"
+            placeholder="可见范围"
+          >
+            <el-option label="仅自己可见" :value="1" />
+            <el-option label="全部可见" :value="2" />
+            <el-option label="保存为草稿" :value="3" />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="封面照片" prop="imageUrl">
@@ -70,12 +81,14 @@
       </el-form>
       <el-divider />
       <div id="news">
-        <h2>已发布资讯</h2>
+        <h2>最新发布的资讯</h2>
         <el-card
+          class="news_item"
           style="margin-top: 10px"
           :body-style="{ padding: '0px' }"
           v-for="(news, index) in newses"
           :index="index"
+          @click="edit(news.id)"
         >
           <span>{{ news.title }}</span>
           <div>
@@ -93,13 +106,13 @@
       </div>
     </div>
 
-    <div id="markdown" class="left" >
+    <div id="markdown" class="left">
       <MdEditor v-model="news.content" @onUploadImg="onUploadImg"></MdEditor>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref ,onUpdated} from "vue";
 import type { FormInstance } from "element-plus";
 
 import { ElMessage } from "element-plus";
@@ -127,8 +140,9 @@ interface Basicinformation {
   categoryId: bigint; // 资讯分类
 }
 
-interface News{
+interface News {
   id: bigint;
+  state: number;
   title: string;
   imageUrl: string;
   categoryId: bigint;
@@ -148,47 +162,60 @@ onBeforeMount(() => {
   if (userString != null) {
     const userId = JSON.parse(userString).user.id;
     news.value.authorId = userId;
-    authorOfNews(userId);// 上传作者的id信息
+    authorOfNews(userId); // 上传作者的id信息
     getNewsesByUserId(userId);
   }
-  const newsId:bigint = route.query.newsId;
+  const newsId: bigint = route.query.newsId;
   if (newsId !== undefined) {
     getNewsById(newsId);
+    return;
   }
-})
 
-function getNewsById(newsId:bigint) {
+
+  // 在当前会话内保存用户已经发布的内容
+  const currentNewsString = sessionStorage.getItem("currentNews");
+  if (currentNewsString != null) {
+    news.value = JSON.parse(currentNewsString);
+  }
+});
+
+function getNewsById(newsId: bigint) {
   axios({
-    method: 'get',
-    url: gatewayUrl + '/newsMessage/newsMessage',
+    method: "get",
+    url: gatewayUrl + "/newsMessage/newsMessage",
     params: {
-      newsId:newsId 
-    }
-  }).then(resp => {
+      newsId: newsId,
+    },
+  }).then((resp) => {
     news.value = resp.data.data;
-  })
+  });
 }
 
 // 查看用户已经发布的信息
 function getNewsesByUserId(userId: bigint) {
   axios({
-    method: 'get',
-    url: gatewayUrl + '/newsMessage/newsMessages',
+    method: "get",
+    url: gatewayUrl + "/newsMessage/newsMessages",
     params: {
-      userId:userId
-    }
-  }).then(resp => {
+      userId: userId,
+    },
+  }).then((resp) => {
     newses.value = resp.data.data;
-  })
+  });
+}
+
+// 编辑信息
+function edit(newsId: bigint) {
+  getNewsById(newsId);
 }
 
 // 确认提交信息
 const submit = () => {
   axios({
-    method:'post',
-    url: gatewayUrl + '/newsMessage/post',
-    data: news.value
-  }).then(resp => {
+    method: "post",
+    url: gatewayUrl + "/newsMessage/post",
+    data: news.value,
+  }).then((resp) => {
     if (resp.data.code == 200) {
       const newsString = JSON.stringify(resp.data.data);
       localStorage.setItem("news", newsString);
@@ -197,7 +224,24 @@ const submit = () => {
     } else {
       ElMessage.error("资讯发布失败");
     }
-  })
+  });
+};
+
+// 将文章信息存为草稿
+function saveDraft() {
+  news.value.state=3;
+  axios({
+    method: "post",
+    url: gatewayUrl + "/newsMessage/saveDraft",
+    data: news.value,
+  }).then((resp) => {
+    if (resp.data.code == 200) {
+      ElMessage.success("存为草稿成功");
+      resetForm(newsRef.value);
+    } else {
+      ElMessage.error("存为草稿失败");
+    }
+  });
 }
 
 // 重置表单信息
@@ -207,24 +251,24 @@ const resetForm = (formEl: FormInstance | undefined) => {
 };
 
 // 图像上传
-function authorOfNews(userId:bigint) {
+function authorOfNews(userId: bigint) {
   axios({
-    method: 'post',
-    url:gatewayUrl+'/newsImage/authorOfNews/'+userId
-  }).then(resp => {
-
-  })
+    method: "post",
+    url: gatewayUrl + "/newsImage/authorOfNews/" + userId,
+  }).then((resp) => {});
 }
+
 const handleAvatarSuccess: UploadProps["onSuccess"] = (
   response,
   uploadFile
 ) => {
-  news.value.imageUrl = gatewayUrl + "/newsImage/download?fileName=" + response.data; // 生成image的地址
+  news.value.imageUrl =
+    gatewayUrl + "/newsImage/download?fileName=" + response.data; // 生成image的地址
 };
 
 // 图像上传之前进行校验
 const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
-  if (rawFile.type !== "image/jpeg" && rawFile.type!=="image/png") {
+  if (rawFile.type !== "image/jpeg" && rawFile.type !== "image/png") {
     ElMessage.error("图像格式必须为jpg和png格式");
     return false;
   } else if (rawFile.size / 1024 / 1024 > 2) {
@@ -235,18 +279,16 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
 };
 
 // 获取所有的资讯分类
-interface Interest{
-  name:string;
+interface Interest {
+  name: string;
   id: number;
 }
 const interests = ref<Interest[]>([]);
 
 function getInterests() {
-  axios.get(gatewayUrl + '/news/interests').then(
-    resp => {
-      interests.value = resp.data.data;
-    }
-  )
+  axios.get(gatewayUrl + "/news/interests").then((resp) => {
+    interests.value = resp.data.data;
+  });
 }
 
 // markdown编辑器点击上传图片
@@ -255,13 +297,13 @@ const onUploadImg = async (files, callback) => {
     files.map((file) => {
       return new Promise((rev, rej) => {
         const form = new FormData();
-        form.append('file', file);
+        form.append("file", file);
 
         axios
-          .post(gatewayUrl+"/newsImage/upload", form, {
+          .post(gatewayUrl + "/newsImage/upload", form, {
             headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+              "Content-Type": "multipart/form-data",
+            },
           })
           .then((res) => rev(res))
           .catch((error) => rej(error));
@@ -269,19 +311,49 @@ const onUploadImg = async (files, callback) => {
     })
   );
   // Approach 1
-  callback(res.map((item) => gatewayUrl + '/newsImage/download?fileName=' + item.data.data));
-}
+  callback(
+    res.map(
+      (item) => gatewayUrl + "/newsImage/download?fileName=" + item.data.data
+    )
+  );
+};
 
 function manageNews() {
   router.push({
-    path: '/main/manage_news',
+    path: "/main/manage_news",
     query: {
-      userId: news.value.id
-    }
-  })
+      userId: news.value.id,
+    },
+  });
 }
 
-</script>
+// 接下来实现每隔5分钟保存更新文章信息
+const currentNews = ref<News>();
+
+function saveDraftWithInterval() {
+  if (news.value.content == null) {
+    return;
+  }
+  news.value.state=3;
+  axios({
+    method: "post",
+    url: gatewayUrl + "/newsMessage/saveDraft",
+    data: news.value,
+  }).then((resp) => {
+    if (resp.data.code == 200) {
+      ElMessage.success("自动保存成功");
+      news.value.id = resp.data.data.id;
+      sessionStorage.setItem("currentNews", JSON.stringify(news.value));
+    } else {
+      ElMessage.error("存为草稿失败");
+    }
+  });
+}
+
+// 每隔5分钟保存一次文章
+setInterval(saveDraftWithInterval, 5* 60 * 1000);
+
+</script> 
 
 <style scoped>
 /* 图像上传 */
@@ -306,6 +378,9 @@ function manageNews() {
 #markdown {
   margin-left: 20px;
   width: 70%;
+}
+.news_item:hover {
+  cursor: pointer;
 }
 </style>
 <style>

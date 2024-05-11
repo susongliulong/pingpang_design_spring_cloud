@@ -87,4 +87,10 @@ public class TutorialController {
         User user=tutorialService.getAuthor(userId);
         return R.success(user);
     }
+
+    @DeleteMapping("/delete")
+    public R deleteTutorial(long tutorialId){
+        basicInformationService.removeById(tutorialId);
+        return R.success(null,"删除成功");
+    }
 }

@@ -26,7 +26,7 @@
       <el-button
         type="primary"
         size="default"
-        @click=""
+        @click="saveDraft"
         style="margin-left: 20px"
         >存为草稿</el-button
       >
@@ -87,16 +87,15 @@
     </div>
 
     <div id="markdown" class="left">
-      <MdEditor v-model="tutorial.content"></MdEditor>
+      <MdEditor v-model="tutorial.content" @onUploadImg="onUploadImg"></MdEditor>
     </div>
   </div>
-  <h1>已发表文章：</h1>
+  <h1>已发表教程：</h1>
   <div id="tutorials">
     <div
       class="tutorial-box"
       v-for="(item, index) in tutorials"
       :index="index"
-      @click="updateTutorial(item.basicInformation.id)"
     >
       <div class="clear">
         <div class="left" style="margin-right: 100px">
@@ -108,7 +107,7 @@
         </div>
         <div class="left">
           <h4>{{ item.basicInformation.title }}</h4>
-          <p>
+          <p style="margin: 20px 0px;">
             所属分类：{{ item.levelName }} &nbsp;&nbsp;&nbsp; 适合对象：{{
               item.suitableObject
             }}
@@ -119,6 +118,13 @@
               size="default"
               @click="updateTutorial(item.basicInformation.id)"
               >修改</el-button
+            >
+
+            <el-button
+              type="danger"
+              size="default"
+              @click="deleteTutorial(item.basicInformation.id)"
+              >删除</el-button
             >
           </p>
         </div>
@@ -187,6 +193,12 @@ onBeforeMount(() => {
       tutorial.value.basicInformation.authorId = user.id;
       getCategories();
       getTutorialsById(user.id);
+
+      // 获取当前保存的教程信息
+      const string = localStorage.getItem("currentTutorial");
+      if (string != null) {
+        tutorial.value = JSON.parse(string);
+      }
     } else {
       ElMessageBox.alert("你当前资历不够，先提升自己球技");
       router.push("/main/news");
@@ -271,6 +283,73 @@ const beforeAvatarUpload: UploadProps["beforeUpload"] = (rawFile) => {
   }
   return true;
 };
+
+// markdown编辑器上传照片
+// markdown编辑器点击上传图片
+const onUploadImg = async (files, callback) => {
+  const res = await Promise.all(
+    files.map((file) => {
+      return new Promise((rev, rej) => {
+        const form = new FormData();
+        form.append("file", file);
+
+        axios
+          .post(gatewayUrl + "/tutorial/upload?userId=" + user.id, form, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => rev(res))
+          .catch((error) => rej(error));
+      });
+    })
+  );
+  // Approach 1
+  callback(
+    res.map(
+      (item) =>
+        gatewayUrl +
+        "/tutorial/download?fileName=" +
+        item.data.data +
+        "&userId=" +
+        user.id
+    )
+  );
+};
+
+// 保存草稿
+function saveDraft() {
+  localStorage.setItem("currentTutorial", JSON.stringify(tutorial.value));
+  ElMessage.success("保存草稿成功")
+}
+
+// 删除教程
+function deleteTutorial(id: bigint) {
+
+  ElMessageBox.confirm(
+    "确定要删除教程，删除之后不可恢复",
+    "Warning",
+    {
+      confirmButtonText: "是",
+      cancelButtonText: "否",
+      type: "warning",
+    }
+  )
+    .then(() => {
+      axios({
+        method: "delete",
+        url:gatewayUrl+'/tutorial/delete?tutorialId='+id
+      }).then((resp) => {
+        ElMessage({
+          type: resp.data.code == 200 ? "success" : "error",
+          message: resp.data.message,
+        });
+        getTutorialsById(user.id);
+        localStorage.removeItem("currentTutorial");
+        resetForm(tutorialRef.value);
+      });
+    })
+}
 </script>
 <style scoped>
 /* 图像上传 */

@@ -53,4 +53,6 @@ public class SignUpController {
         return R.success(sign!=null);
 
     }
+
+
 }

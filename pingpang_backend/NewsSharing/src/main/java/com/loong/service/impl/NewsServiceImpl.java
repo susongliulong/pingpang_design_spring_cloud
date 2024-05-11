@@ -162,10 +162,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         return keyWords.subList(0, Math.min(keyWords.size(), 10));
     }
 
-    @Transactional
-    @Override
-    public BasicInformation saveNews(NewsDTO newsDTO) {
-
+    private BasicInformation saveNews(NewsDTO newsDTO, Integer state){
         // 判断是否修改文章
         if (newsDTO.getId() != null) {
             basicInformationMapper.deleteById(newsDTO.getId());
@@ -178,9 +175,16 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         basicInformation.setCategoryId(newsDTO.getCategoryId());
         basicInformation.setAuthorId(newsDTO.getAuthorId());
         basicInformation.setCoverImage(newsDTO.getImageUrl());
-        String content = newsDTO.getContent();
-        basicInformation.setMainContent(content.substring(0, Math.min(content.length(), 100)));
         basicInformation.setPublishTime(LocalDateTime.now());
+        basicInformation.setState(state);
+        return basicInformation;
+    }
+
+    @Transactional
+    @Override
+    public BasicInformation saveNews(NewsDTO newsDTO) {
+
+        BasicInformation basicInformation = saveNews(newsDTO, newsDTO.getState());
 
         basicInformationMapper.insert(basicInformation);
         Long newsId = basicInformation.getId();
@@ -189,11 +193,15 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         News news = new News();
         news.setNewsId(newsId);
         news.setCategoryId(newsDTO.getCategoryId());
-        news.setContent(content);
+        news.setContent(newsDTO.getContent());
         newsMapper.insert(news);
         return basicInformation;
     }
 
+    @Override
+    public BasicInformation saveDraft(NewsDTO newsDTO) {
+        return new BasicInformation();
+    }
     /**
      * 用户注销账号之后删除所有的数据
      * @param id
@@ -258,6 +266,8 @@ public class NewsServiceImpl extends ServiceImpl<NewsMapper, News> implements IN
         });
         return newsVoList;
     }
+
+
 
     @Override
     public NewsDTO getNews(Long newsId, Long userId) {

@@ -152,5 +152,11 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     }
 
+    @Override
+    public List<Match> matches(long userId) {
+        List<Match> matches = matchMapper.selectList(new LambdaQueryWrapper<Match>().eq(Match::getUserId, userId));
+        return matches;
+    }
+
 
 }

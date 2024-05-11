@@ -35,4 +35,7 @@ public interface IMatchService extends IService<Match> {
     void postMatch(MatchDTO matchDTO);
 
     void deleteAllData(Long id);
+
+    List<Match> matches(long userId);
+
 }

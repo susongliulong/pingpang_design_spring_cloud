@@ -12,7 +12,7 @@
       <el-button
         type="primary"
         size="default"
-        @click=""
+        @click="saveDraft"
         style="margin-left: 20px"
         >存为草稿</el-button
       >
@@ -103,23 +103,26 @@
         <h2>已发布赛事</h2>
         <div class="match_box" v-for="(item, index) in matches" :index="index">
           <div style="font-weight: bold">{{ item.name }}</div>
-          <p>比赛时间：{{ item.time.toLocaleDateString() }}</p>
+          <p>比赛时间：{{ item.matchStartTime.substring(0, 10) + " " + 
+          item.matchStartTime.substring(11)}}
+          </p>
           <p>比赛场地：{{ item.address }}</p>
           <p>
-            比赛最低积分要求：{{ item.minPoints }} 积分奖励：{{ item.awrards }}
+            比赛最低积分要求：{{ item.minPoints }} 积分奖励：{{ item.awards }}
           </p>
+          <p>报名人数：{{ item.playerNumber }}</p>
         </div>
       </div>
     </div>
 
     <div id="markdown" class="left">
-      <MdEditor v-model="match.content"></MdEditor>
+      <MdEditor v-model="match.content" @onUploadImg="onUploadImg"></MdEditor>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { onBeforeMount, ref } from "vue";
-import { ElMessage, type FormInstance, type FormRules } from "element-plus";
+import { ElMessage, type FormInstance, type FormRules ,ElMessageBox } from "element-plus";
 
 import { MdEditor } from "md-editor-v3";
 import axios from "axios";
@@ -145,14 +148,19 @@ interface MatchDTO {
   match: Match;
   content: string;
 }
-
+let user: any;
 onBeforeMount(() => {
   const userString = localStorage.getItem("user");
   if (userString != null) {
-    const user = JSON.parse(userString).user;
+    user = JSON.parse(userString).user;
+    const matchString = localStorage.getItem("currentMatch");
+    if (matchString != null) {
+      match.value = JSON.parse(matchString);
+    }
     match.value.match.userId = user.id;
+    getMatchesByUserId(user.id);
   }
-})
+});
 
 const match = ref<MatchDTO>({ match: {} });
 const matchRef = ref<FormInstance>(); // 表单信息
@@ -161,16 +169,26 @@ const matches = ref<Match[]>([]);
 
 // 提交表单信息
 const submit = () => {
-  axios({
-    method: "post",
-    url: gatewayUrl + "/match/post",
-    data: match.value,
-  }).then((resp) => {
-    if (resp.data.code == 200) {
-      ElMessage.success(resp.data.message);
-    } else {
-      ElMessage.error("发布赛事失败");
+  ElMessageBox.confirm(
+    "你确定要发布赛事，赛事一旦发布需要练习管理员才能删除",
+    "Warning",
+    {
+      confirmButtonText: "是",
+      cancelButtonText: "否",
+      type: "warning",
     }
+  ).then(() => {
+    axios({
+      method: "post",
+      url: gatewayUrl + "/match/post",
+      data: match.value,
+    }).then((resp) => {
+      ElMessage({
+        type: resp.data.code == 200 ? "success" : "error",
+        message: resp.data.message,
+      });
+      // 查询已经发布的赛事
+    });
   });
 };
 
@@ -179,6 +197,62 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+
+// 上传照片
+// markdown编辑器点击上传图片
+const onUploadImg = async (files, callback) => {
+  const res = await Promise.all(
+    files.map((file) => {
+      return new Promise((rev, rej) => {
+        const form = new FormData();
+        form.append("file", file);
+
+        axios
+          .post(gatewayUrl + "/match/uploadImg?userId=" + user.id, form, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => rev(res))
+          .catch((error) => rej(error));
+      });
+    })
+  );
+  // Approach 1
+  callback(
+    res.map(
+      (item) =>
+        gatewayUrl +
+        "/match/downloadImg?fileName=" +
+        item.data.data +
+        "&userId=" +
+        user.id
+    )
+  );
+};
+// 查询已经发布赛事信息
+function getMatchesByUserId(id: bigint) {
+  axios({
+    method: 'get',
+    url:gatewayUrl+"/match/matches?userId="+id
+  }).then(resp => {
+    matches.value = resp.data.data;
+  })
+}
+
+// 存为草稿
+function saveDraft() {
+  localStorage.setItem("currentMatch", JSON.stringify(match.value));
+  ElMessage.success("存为草稿成功");
+}
+
+// 每隔5分钟保存一次
+setInterval(() => {
+  if (match.value.content != null) {
+    saveDraft();
+  }
+}, 5 * 60 * 1000);
+
 </script>
 <style scoped>
 #header {
