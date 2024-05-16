@@ -35,7 +35,7 @@ spring:
         - id: match_regulation
           uri: lb://MatchRegulation
           predicates:
-            - Path=/match/**,/match/matchMessage/**,/signUp/**
+            - Path=/match/**,/match/matchMessage/**,/signUp/**,/userAbility/**
         - id: tutorial_regulation
           uri: lb://TutorialRegulation
           predicates:

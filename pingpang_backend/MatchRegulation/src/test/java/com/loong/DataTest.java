@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class DataTest {
 
 
+
     @Test
     public void generateSchools() throws Exception{
 
@@ -70,6 +71,6 @@ public class DataTest {
 
             }
         }
-
     }
+
 }

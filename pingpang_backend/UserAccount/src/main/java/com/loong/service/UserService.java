@@ -20,4 +20,6 @@ public interface UserService extends IService<User> {
     R logout(Long id);
 
     R updateUser(UserDto userDto);
+
+    com.loong.entity.nosecrect.User getUserById(Long id);
 }

@@ -41,6 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private UserMapper userMapper;
 
+
     @Autowired
     private RedisUtil redisUtil;
 
@@ -196,6 +197,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         tutorialFeign.updateUser(userDto);
 
         return R.success("账号信息修改成功");
+    }
+
+    @Override
+    public com.loong.entity.nosecrect.User getUserById(Long id) {
+
+        return userMapper.getUserById(id);
     }
 
 }

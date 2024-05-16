@@ -3,6 +3,7 @@ package com.loong.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.loong.entity.User;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -22,4 +23,12 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Delete("delete from user_interest where user_id = #{userId}")
     void deleteInterestsById(long userId);
+
+    /**
+     * 获取非脱敏之后的数据
+     * @param id
+     * @return
+     */
+    @Select("select * from user where id = #{id}")
+    com.loong.entity.nosecrect.User getUserById(Long id);
 }

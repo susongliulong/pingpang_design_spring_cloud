@@ -8,4 +8,7 @@ import lombok.NoArgsConstructor;
 public class SignUpDTO {
     private Long userId;
     private Long matchId;
+
+    private String nickname;
+    private String contact;
 }

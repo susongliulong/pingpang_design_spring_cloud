@@ -13,6 +13,7 @@ import com.loong.mapper.MatchMapper;
 import com.loong.mapper.SignUpMapper;
 import com.loong.mapper.UserMapper;
 import com.loong.service.IMatchService;
+import com.loong.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,9 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     @Autowired
     private SignUpMapper signUpMapper;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public List<MatchVo> matchMessage(Integer pageNumber) {
@@ -154,7 +158,13 @@ public class MatchServiceImpl extends ServiceImpl<MatchMapper, Match> implements
 
     @Override
     public List<Match> matches(long userId) {
+        List<Object> objects = redisUtil.lGet(userId + "_published_matches", 0, -1);
+        if(objects!=null && !objects.isEmpty()){
+            return objects.stream().map(object -> (Match) object).toList();
+        }
         List<Match> matches = matchMapper.selectList(new LambdaQueryWrapper<Match>().eq(Match::getUserId, userId));
+        List<Object> list = matches.stream().map(match -> (Object) match).toList();
+        redisUtil.lSet(userId + "_published_matches", list,5*60);
         return matches;
     }
 

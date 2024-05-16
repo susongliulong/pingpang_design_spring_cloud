@@ -637,6 +637,18 @@ public class RedisUtil {
         }
     }
 
+    public boolean lSet(String key, List<Object> value, long time,boolean isList) {
+        try {
+            redisTemplate.opsForList().rightPushAll(key, value);
+            if (time > 0)
+                expire(key, time);
+            return true;
+        } catch (Exception e) {
+            log.error(key, e);
+            return false;
+        }
+    }
+
     /**
      * 根据索引修改list中的某条数据
      *

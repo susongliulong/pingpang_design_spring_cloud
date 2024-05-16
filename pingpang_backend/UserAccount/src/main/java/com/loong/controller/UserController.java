@@ -6,7 +6,6 @@ import com.loong.entity.User;
 import com.loong.entity.dto.UserDto;
 import com.loong.service.UserService;
 import com.loong.service.checkcode.impl.CheckCodeServiceImpl;
-import com.loong.util.EncryptUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,5 +98,12 @@ public class UserController {
     public R interests(@PathVariable long UserId) {
         List<Integer> interests = userService.interests(UserId);
         return R.success(interests);
+    }
+
+    @GetMapping("/getUserById")
+    public R getUserById(Long id){
+
+        com.loong.entity.nosecrect.User  user = userService.getUserById(id);
+        return R.success(user);
     }
 }

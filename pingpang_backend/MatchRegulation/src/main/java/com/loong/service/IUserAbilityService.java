@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserAbilityService extends IService<UserAbility> {
 
+    String[] getAbilities(String name);
+
+    UserAbility generateAbilityCoefficient(Integer[] serves, Integer[] returns, Integer[] asserts, Integer[] defends);
 }

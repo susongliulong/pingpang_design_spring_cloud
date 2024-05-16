@@ -1,6 +1,9 @@
 package com.loong;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.loong.entity.Match;
+import com.loong.entity.SignUp;
 import com.loong.entity.User;
 import com.loong.entity.UserAbility;
 import com.loong.mapper.MatchMapper;
@@ -8,6 +11,7 @@ import com.loong.mapper.SignUpMapper;
 import com.loong.mapper.UserAbilityMapper;
 import com.loong.mapper.UserMapper;
 import com.loong.service.IMatchService;
+import com.loong.util.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,9 @@ public class AppTest {
 
     @Autowired
     private IMatchService matchService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 生成赛事管理所需要的测试数据
@@ -112,4 +119,39 @@ public class AppTest {
         );
     }
 
+    @Test
+    public void test5(){
+        System.out.println(redisUtil.get("123"));
+    }
+
+
+    /**
+     * 生成测试所需要的报名数据
+     */
+    @Test
+    public void generateSignUps(){
+
+        // matches 表中的前1000条数据，每一条数据对应一个比赛记录
+        // 在sign_up表中，每一项比赛有57个人参加比赛
+        List<User> users = userMapper.selectList(null);
+        LocalDateTime now = LocalDateTime.now();
+
+        Page<Match> matchPage = new Page<>(1, 10000);
+        matchPage=matchMapper.selectPage(matchPage,new LambdaQueryWrapper<Match>().ge(Match::getSignUpEndTime,now));
+        matchPage.getRecords().forEach(
+                match->{
+                    users.forEach(
+                            user->{
+                                SignUp signUp = new SignUp();
+                                signUp.setUserId(user.getId());
+                                signUp.setMatchId(match.getMatchId());
+                                signUp.setNickname(user.getName());
+                                signUp.setContact(user.getTelephone());
+                                signUp.setSignUpTime(match.getSignUpEndTime().minusDays(3L));
+                                signUpMapper.insert(signUp);
+                            }
+                    );
+                }
+        );
+    }
 }

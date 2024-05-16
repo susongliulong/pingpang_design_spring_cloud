@@ -43,5 +43,14 @@ public class SignUp implements Serializable {
     @TableField(value="rankness")
     private Integer rankness;
 
+    private String nickname;
+
+    /**
+     * 联系方式
+     */
+    private String contact;
+
+
+
 
 }

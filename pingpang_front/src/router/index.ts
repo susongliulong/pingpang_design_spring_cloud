@@ -20,6 +20,9 @@ import NewsVue from "@/components/main/news/NewsVue.vue";
 import NewsMessageView from "@/components/main/news/NewsMessageView.vue";
 import ManageNewsView from "@/components/main/news/ManageNewsView.vue";
 import MatchMessageView from "@/components/main/match/MatchMessageView.vue";
+import UserAbility from "@/components/main/match/UserAbility.vue";
+
+// 赛事管理
 
 
 const router = createRouter({
@@ -97,6 +100,15 @@ const router = createRouter({
           name: "write_match",
           components: {
             MainContent: MatchVue,
+            // AsideBar: NullVue,
+          },
+        },
+        // 选手个人综合能力
+        {
+          path: "user_ability",
+          name: "user_ability",
+          components: {
+            MainContent: UserAbility
             // AsideBar: NullVue,
           },
         },

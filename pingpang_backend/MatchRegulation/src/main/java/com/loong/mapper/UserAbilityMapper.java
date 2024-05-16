@@ -1,7 +1,8 @@
 package com.loong.mapper;
 
-import com.loong.entity.UserAbility;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.loong.entity.UserAbility;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,4 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserAbilityMapper extends BaseMapper<UserAbility> {
 
+    @Select("select name from ability where category = #{name}")
+    String[] getAbilities(String name);
+
+    @Select("select * from user_ability where user_id = #{userId}")
+    UserAbility getUserAbility(Long userId);
 }

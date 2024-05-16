@@ -1,10 +1,12 @@
 package com.loong.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -21,6 +23,7 @@ public class UserAbility implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "user_id")
     private Long userId;
 
     /**
@@ -44,5 +47,7 @@ public class UserAbility implements Serializable {
     private Integer defend;
 
     private Integer score;
+
+    private LocalDateTime lastUpdateTime;
 
 }

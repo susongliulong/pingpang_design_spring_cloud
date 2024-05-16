@@ -1,9 +1,7 @@
-package com.loong.entity;
+package com.loong.entity.nosecrect;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.loong.common.annotations.Desensitization;
-import com.loong.common.enums.DesensitizationTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,31 +9,20 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author loong
- * @since 2024-04-07
- */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable{
+public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     private String name;
 
-    @Desensitization(type = DesensitizationTypeEnum.MOBILE_PHONE)
     private String telephone;
 
-    @Desensitization(type = DesensitizationTypeEnum.EMAIL)
     private String email;
 
     private String description;

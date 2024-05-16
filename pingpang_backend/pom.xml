@@ -12,7 +12,7 @@
   <modules>
     <module>eurekaserver</module>
     <module>gateway</module>
-    <module>UserRequestDispatcher</module>
+    <module>AdminRegulation</module>
     <module>UserAccount</module>
       <module>CommentRegulation</module>
       <module>NewsSharing</module>
